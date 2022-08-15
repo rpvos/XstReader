@@ -19,11 +19,11 @@ namespace XstReader
     public static class IEnumerableXstMessageExtensions
     {
         /// <summary>
-        /// Save all the properties in a collection of Messages in the specified file
+        /// The unread messages
         /// </summary>
-        /// <param name="messages"></param>
-        /// <param name="fileName"></param>
-        public static void SavePropertiesToFile(this IEnumerable<XstMessage> messages, string fileName)
-            => messages.Select(m => m.Properties.ItemsNonBinary).SaveToFile(fileName);
+        /// <param name="elements"></param>
+        /// <returns></returns>
+        public static IEnumerable<XstMessage>Unread(this IEnumerable<XstMessage> elements)
+            =>elements.Where(m => !m.IsRead);
     }
 }

@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using XstReader.ElementProperties;
 
@@ -22,31 +23,50 @@ namespace XstReader
     public class XstRecipient : XstElement
     {
         /// <summary>
+        /// Says if this Recipient is Obtained from Message Properties
+        /// </summary>
+        [DisplayName("Is Generated From Message Properties")]
+        [Category("General")]
+        [Description("Says if this Recipient is Obtained from Message Properties")]
+        public bool IsGeneratedFromMessageProperties { get;}
+        /// <summary>
         /// The Message of the Recipient
         /// </summary>
+        [DisplayName("Message")]
+        [Category("General")]
+        [Description("The Message of the Recipient")]
         public XstMessage Message { get; internal set; }
+
         /// <summary>
-        /// The File
+        /// The Parents of this Element
         /// </summary>
-        public override XstFile XstFile => Message.XstFile;
+        [Browsable(false)]
+        public override XstElement Parent => Message;
+
 
         /// <summary>
         /// The Type of the Recipient in the Message
         /// </summary>
+        [DisplayName("Recipient Type")]
+        [Category(@"Mapi Recipient")]
+        [Description(@"Represents the recipient type of a recipient on the message.")]
         public RecipientType RecipientType
             => (RecipientType)(Properties[PropertyCanonicalName.PidTagRecipientType]?.Value ?? 0);
 
         /// <summary>
         /// The Address of the Recipient (SmtpAddress or EmailAddress)
         /// </summary>
+        [DisplayName("Address")]
+        [Category(@"General")]
+        [Description(@"Contains the SMTP address or the email address of the Message object.")]
         public string Address
-            => Properties[PropertyCanonicalName.PidTagSmtpAddress]?.Value ??
-               Properties[PropertyCanonicalName.PidTagEmailAddress]?.Value;
+            => Properties[PropertyCanonicalName.PidTagSmtpAddress]?.ValueAsStringSanitized ??
+               Properties[PropertyCanonicalName.PidTagEmailAddress]?.ValueAsStringSanitized;
 
         /// <summary>
         /// Ctor
         /// </summary>
-        public XstRecipient()
+        public XstRecipient() : base(XstElementType.Recipient)
         {
         }
 
@@ -55,12 +75,15 @@ namespace XstReader
         /// </summary>
         /// <param name="message"></param>
         /// <param name="propertiesGetter"></param>
-        public XstRecipient(XstMessage message, Func<IEnumerable<XstProperty>> propertiesGetter)
+        /// param name="isGeneratedFromMessageProperties">
+        public XstRecipient(XstMessage message, Func<IEnumerable<XstProperty>> propertiesGetter, bool isGeneratedFromMessageProperties) : this()
         {
             Message = message;
             Properties = new XstPropertySet(propertiesGetter,
                                             (t) => propertiesGetter?.Invoke().FirstOrDefault(p => p.Tag == t),
                                             (t) => propertiesGetter?.Invoke().Any(p => p.Tag == t) ?? false);
+
+            IsGeneratedFromMessageProperties = isGeneratedFromMessageProperties;
         }
         private protected override XstProperty LoadProperty(PropertyCanonicalName tag)
             => null;

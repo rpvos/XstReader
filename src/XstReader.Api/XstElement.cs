@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using XstReader.ElementProperties;
 
@@ -21,18 +22,49 @@ namespace XstReader
     public abstract class XstElement
     {
         /// <summary>
-        /// The Container File
+        /// The Type of the element
         /// </summary>
-        public abstract XstFile XstFile { get; }
+        [DisplayName("Element Type")]
+        [Category(@"General")]
+        [Description(@"The internal type of the XstElement")]
+        public XstElementType ElementType { get; private set; }
+
+
         private protected LTP Ltp => XstFile.Ltp;
         private protected NDB Ndb => XstFile.Ndb;
         internal NID Nid { get; set; } //Where element data is held
+
+
+        /// <summary>
+        /// The Parents of this Element
+        /// </summary>
+        [Browsable(false)]
+        public abstract XstElement Parent { get; }
+
+
+        /// <summary>
+        /// The Container File
+        /// </summary>
+        [DisplayName("File")]
+        [Category("General")]
+        [Description("The Container File")]
+        public virtual XstFile XstFile => (this is XstFile file) ? file: Parent?.XstFile;
+
+        private string _Path = null;
+        /// <summary>
+        /// The Path of this Element
+        /// </summary>
+        [DisplayName("Path")]
+        [Category("General")]
+        [Description(@"The Path of this Element")]
+        public virtual string Path => _Path ?? (_Path = $"{Parent.Path}\\{DisplayName}");
 
 
         private XstPropertySet _Properties = null;
         /// <summary>
         /// The Properties of the Element
         /// </summary>
+        [Browsable(false)]
         public XstPropertySet Properties
         {
             get => _Properties ?? (_Properties = new XstPropertySet(LoadProperties, LoadProperty, CheckProperty));
@@ -43,16 +75,21 @@ namespace XstReader
         /// <summary>
         /// The Name of the Element
         /// </summary>
-        public string DisplayName
+        [DisplayName("Display Name")]
+        [Category(@"Mapi Common")]
+        [Description(@"Contains the display name of the folder.")]
+        public virtual string DisplayName
         {
-            get => _DisplayName ?? Properties[PropertyCanonicalName.PidTagDisplayName]?.Value;
-            protected set => _DisplayName = value;
+            get => _DisplayName ?? (_DisplayName = Properties[PropertyCanonicalName.PidTagDisplayName]?.ValueAsStringSanitized);
+            protected set => _DisplayName = value.SanitizeControlChars();
         }
         /// <summary>
         /// The last modification time of the Element
         /// </summary>
+        [DisplayName("Last Modification Time")]
+        [Category(@"Message Time Properties")]
+        [Description(@"Contains the time, in UTC, of the last modification to the object.")]
         public DateTime? LastModificationTime => Properties[PropertyCanonicalName.PidTagLastModificationTime]?.Value;
-
 
         #region Properties
         private protected abstract IEnumerable<XstProperty> LoadProperties();
@@ -69,9 +106,20 @@ namespace XstReader
         /// </summary>
         /// <returns></returns>
         public IEnumerable<XstProperty> GetProperties()
-            => Properties.ItemsNonBinary;
+            => Properties.Items.NonBinary();
 
         #endregion Properties
+
+        #region Ctor
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="elementType"></param>
+        protected XstElement(XstElementType elementType)
+        {
+            ElementType = elementType;
+        }
+        #endregion Ctor
 
         private protected void ClearProperties()
         {
@@ -84,12 +132,19 @@ namespace XstReader
         /// </summary>
         public void ClearContents()
         {
-            new Thread(()=> { ClearContentsInternal(); GC.Collect(); }).Start();
+            new Thread(() => { ClearContentsInternal(); GC.Collect(); }).Start();
         }
 
         internal virtual void ClearContentsInternal()
         {
             ClearProperties();
         }
+
+        /// <summary>
+        /// Gets the String representation of the object
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+            => DisplayName;
     }
 }

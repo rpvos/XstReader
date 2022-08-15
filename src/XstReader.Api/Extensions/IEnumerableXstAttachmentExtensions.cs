@@ -10,7 +10,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace XstReader
 {
@@ -27,9 +27,27 @@ namespace XstReader
         /// <param name="creationTime"></param>
         public static void SaveToFolder(this IEnumerable<XstAttachment> attachments, string fullFolderName, DateTime? creationTime)
         {
-            foreach (var attachment in attachments)
+            foreach (var attachment in attachments.OrderBy(a => a.LastModificationTime))
                 attachment.SaveToFolder(fullFolderName, creationTime);
         }
 
+        /// <summary>
+        /// Gets the attachments Files 
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<XstAttachment> Files(this IEnumerable<XstAttachment> attachments)
+            => attachments.Where(a => a.IsFile);
+
+        /// <summary>
+        /// Gets the Visible Files Attached
+        /// </summary>
+        public static IEnumerable<XstAttachment> VisibleFiles(this IEnumerable<XstAttachment> attachments)
+            => attachments.Files().Where(a => !a.Hide);
+
+        /// <summary>
+        /// Gets the Inline Attachments
+        /// </summary>
+        public static IEnumerable<XstAttachment> Inlines(this IEnumerable<XstAttachment> attachments)
+            => attachments.Where(a => a.HasContentId);
     }
 }

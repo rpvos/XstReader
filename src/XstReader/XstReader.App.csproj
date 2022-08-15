@@ -1,0 +1,96 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Description>XstReader is an open source viewer for Microsoft Outlook’s .ost and .pst files (also those protected by unknown password), written entirely in C#, with no dependency on any Microsoft Office components.</Description>
+    <Copyright>Copyright (c) 2021, iluvadev, and released under Ms-PL License.</Copyright>
+    <PackageProjectUrl>https://github.com/iluvadev/XstReader</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/iluvadev/XstReader</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>pst-file-viewer;outlook</PackageTags>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+    <FileVersion>2.0.0</FileVersion>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <PackageId>XstReader</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>iluvadev</Authors>
+    <Product>XstReader</Product>
+    <StartupObject>XstReader.App.Program</StartupObject>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Krypton.Docking" Version="65.22.6.152" />
+    <PackageReference Include="Krypton.Navigator" Version="65.22.6.152" />
+    <PackageReference Include="Krypton.Toolkit" Version="65.22.6.152" />
+    <PackageReference Include="Krypton.Workspace" Version="65.22.6.152" />
+    <PackageReference Include="ObjectListView.Repack.Core3" Version="2.9.2" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XstReader.Api\XstReader.Api.csproj" />
+    <ProjectReference Include="..\XstReader.Common\XstReader.App.Common.csproj" />
+    <ProjectReference Include="..\XstReader.Exporter\XstReader.Exporter.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\XstAttachmentListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\XstAttachmentViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\XstDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\XstFolderTreeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\XstMessageContentViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\XstMessageListControl.cs" />
+    <Compile Update="Controls\XstMessagesFilterEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\XstMessageViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\XstPropertiesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\XstPropertiesInfoControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\XstRecipientListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
