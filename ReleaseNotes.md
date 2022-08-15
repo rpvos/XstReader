@@ -1,4 +1,11 @@
 # Release Notes
+**XstReader v.2.0.0**:
+* New User interface
+* More information of Properties
+* New Html export format
+* Print message
+
+
 **XstReader.Api v.1.1.0**:
 * Decryption support for .net core
 * Enhanced information in class properties
