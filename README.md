@@ -12,14 +12,14 @@ As his daughter [@seeemilyplay](https://github.com/seeemilyplay) said:
 
 # Projects  
 ### [XstReader](./XstReader.md)
-![XstReader ScreenShot](https://raw.githubusercontent.com/iluvadev/XstReader/master/docs/img/Home_screenshot0.9_small.jpg)
+![XstReader ScreenShot](https://raw.githubusercontent.com/iluvadev/XstReader/master/docs/img/XstReader-Screenshot01.png)
 
 An application to view Microsoft Outlook's .ost and .pst files:
 * Can open .ost and .pst files
 * With no dependency on any Microsoft Office component
 * You can inspect all the properties of Folders, Emails, Attachments and Recipients
-* You can export email properties and email body in its native format (plain text, Html or rich text)
-* Only requires .Net Framework 4.6.1 (for Windows)
+* You can open attached emails, images, and some docs inside the application
+* You can export emails in a single html file, with all the attachments and all available information
 
 More information in [XstReader.md](./XstReader.md)
 
