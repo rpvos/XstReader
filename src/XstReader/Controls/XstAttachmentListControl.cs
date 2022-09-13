@@ -20,8 +20,8 @@ namespace XstReader.App.Controls
     {
         private static bool ShowHidden
         {
-            get => XstReaderEnvironment.Options.ShowHiddenAttachments;
-            set => XstReaderEnvironment.Options.ShowHiddenAttachments = value;
+            get => XstReaderEnvironment.Options.ViewOptions.ShowHiddenAttachments;
+            set => XstReaderEnvironment.Options.ViewOptions.ShowHiddenAttachments = value;
         }
 
         public XstAttachmentListControl()

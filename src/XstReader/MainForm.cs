@@ -11,9 +11,9 @@
 using Krypton.Docking;
 using Krypton.Toolkit;
 using System.Data;
-using System.Reflection;
 using XstReader.App.Controls;
 using XstReader.App.Helpers;
+using XstReader.Exporter;
 
 namespace XstReader.App
 {
@@ -72,7 +72,7 @@ namespace XstReader.App
         private XstFile? GetCurrentXstFile() => FolderTreeControl.GetDataSource();
         private XstFolder? GetCurrentXstFolder() => FolderTreeControl.GetSelectedItem();
         private XstMessage? GetCurrentXstMessage() => MessageViewControl.GetDataSource();
-        private IEnumerable<XstAttachment>? GetCurrentXstAttachmentsToExport() => GetCurrentXstMessage()?.Attachments?.Where(a => a.IsFile && !a.IsHidden);
+        private IEnumerable<XstAttachment>? GetCurrentXstAttachmentsToExport(XstAttachmentExportOptions options) => GetCurrentXstMessage()?.Attachments?.Where(a => a.IsFile && !a.IsHidden);
 
         private void UpdateMenu()
         {
@@ -84,7 +84,7 @@ namespace XstReader.App
             FolderExportFoldersToolStripMenuItem.Enabled = GetCurrentXstFolder()?.Folders?.Any() ?? false;
 
             MessageToolStripMenuItem.Enabled = GetCurrentXstMessage() != null;
-            MessageExportAttachmentsToolStripMenuItem.Enabled = GetCurrentXstAttachmentsToExport()?.Any() ?? false;
+            MessageExportAttachmentsToolStripMenuItem.Enabled = GetCurrentXstMessage()?.Attachments?.Any(a => a.IsFile) ?? false;
         }
 
         public MainForm()
@@ -107,7 +107,7 @@ namespace XstReader.App
             MessageViewControl.SelectedItemChanged += (s, e) => CurrentXstElement = e.Element;
             MessageViewControl.GotFocus += (s, e) => CurrentXstElement = MessageViewControl.GetSelectedItem();
 
-            ConfigExportToolStripMenuItem.Click += (s, e) => { using var f = new SettingsForm(); f.ShowDialog(); };
+            SettingsToolStripMenuItem.Click += (s, e) => { using var f = new SettingsForm(); f.ShowDialog(); };
 
 
             AboutToolStripMenuItem.Click += (s, e) => { using var f = new AboutForm(); f.ShowDialog(); };
@@ -124,9 +124,12 @@ namespace XstReader.App
             {
                 string path = string.Empty;
                 var elem = GetCurrentXstFile();
-                if (elem != null && ExportHelper.AskDirectoryPath(ref path))
+                var options = XstReaderEnvironment.Options.AttachmentExportOptions;
+                if (elem != null &&
+                    new ExportAttachmentOptionsForm(options).ShowDialog() == DialogResult.OK &&
+                    ExportHelper.AskDirectoryPath(ref path))
                     DoInWait($"Exporting all Attachments from {elem.FileName}",
-                             () => ExportHelper.ExportAttachmentsToDirectory(elem.RootFolder, path, true));
+                             () => ExportHelper.ExportAttachmentsToDirectory(elem.RootFolder, path, true, options));
             };
 
             FolderExportFoldersToolStripMenuItem.Click += (s, e) =>
@@ -149,9 +152,12 @@ namespace XstReader.App
             {
                 string path = string.Empty;
                 var elem = GetCurrentXstFolder();
-                if (elem != null && ExportHelper.AskDirectoryPath(ref path))
+                var options = XstReaderEnvironment.Options.AttachmentExportOptions;
+                if (elem != null &&
+                    new ExportAttachmentOptionsForm(options).ShowDialog() == DialogResult.OK && 
+                    ExportHelper.AskDirectoryPath(ref path))
                     DoInWait($"Exporting all Attachments from folder {elem.Path}",
-                             () => ExportHelper.ExportAttachmentsToDirectory(elem, path, true));
+                             () => ExportHelper.ExportAttachmentsToDirectory(elem, path, true, options));
             };
             MessagePrintToolStripMenuItem.Click += (s, e) => MessageViewControl.Print();
             MessageExportToolStripMenuItem.Click += (s, e) =>
@@ -166,17 +172,19 @@ namespace XstReader.App
             {
                 string path = string.Empty;
                 var elem = GetCurrentXstMessage();
-                var elems = GetCurrentXstAttachmentsToExport();
-                if (elem != null && elems != null && ExportHelper.AskDirectoryPath(ref path))
+                var options = XstReaderEnvironment.Options.AttachmentExportOptions;
+                if (elem != null && 
+                    new ExportAttachmentOptionsForm(options).ShowDialog() == DialogResult.OK && 
+                    ExportHelper.AskDirectoryPath(ref path))
                     DoInWait($"Exporting Attachments from message {elem.Path}",
-                             () => ExportHelper.ExportAttachmentsToDirectory(elems, path));
+                             () => ExportHelper.ExportAttachmentsToDirectory(elem, path, options));
             };
 
             LayoutDefaultToolStripMenuItem.Click += (s, e) =>
             {
                 try
                 {
-                    var fileName = Path.GetTempFileName()+".xml";
+                    var fileName = Path.GetTempFileName() + ".xml";
                     File.WriteAllBytes(fileName, Properties.Resources.layout_default);
                     KryptonDockingManager.LoadConfigFromFile(fileName);
                     File.Delete(fileName);

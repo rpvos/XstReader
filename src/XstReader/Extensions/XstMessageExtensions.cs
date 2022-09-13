@@ -20,8 +20,13 @@ namespace XstReader.App
                 return string.Empty;
 
             var exporter = new ExporterHtml();
-            exporter.ExportOptions.EmbedAttachmentsInFile = !isInApp;
-            exporter.ExportOptions.ShowDetails = !isInApp;
+            if (isInApp)
+            {
+                exporter.ExportOptions.EmbedAttachmentsInFile = false;
+                exporter.ExportOptions.ShowDetails = false;
+            }
+            else
+                exporter.ExportOptions = XstReaderEnvironment.Options.HtmlExportOptions;
 
             return exporter.Render(message);
         }

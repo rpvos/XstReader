@@ -8,6 +8,9 @@
 //
 // Copyright (c) 2021, iluvadev, and released under Ms-PL License.
 
+using RtfPipe.Tokens;
+using XstReader.Exporter;
+
 namespace XstReader.App.Helpers
 {
     public static class ExportHelper
@@ -37,19 +40,7 @@ namespace XstReader.App.Helpers
             return true;
         }
 
-
-        public static bool ExportAttachmentsToDirectory(XstFolder? folder, bool includeSubfolders)
-        {
-            if (folder == null)
-                return false;
-
-            if (FolderBrowserDialog.ShowDialog() != DialogResult.OK)
-                return false;
-
-            return ExportAttachmentsToDirectory(folder, FolderBrowserDialog.SelectedPath, includeSubfolders);
-        }
-
-        public static bool ExportAttachmentsToDirectory(XstFolder? folder, string path, bool includeSubfolders)
+        public static bool ExportAttachmentsToDirectory(XstFolder? folder, string path, bool includeSubfolders, XstAttachmentExportOptions options)
         {
             if (folder == null)
                 return false;
@@ -58,8 +49,11 @@ namespace XstReader.App.Helpers
                 Directory.CreateDirectory(path);
 
             bool ret = true;
-            if (!ExportAttachmentsToDirectory(folder.Messages.SelectMany(m => m.Attachments.Where(a => a.IsFile && !a.IsHidden)), path))
-                ret = false;
+            foreach (var message in folder.Messages.OrderBy(m => m.LastModificationTime))
+            {
+                if (!ExportAttachmentsToDirectory(message, path, options))
+                    ret = false;
+            }
 
             if (includeSubfolders)
             {
@@ -70,30 +64,48 @@ namespace XstReader.App.Helpers
                     int i = 1;
                     while (Directory.Exists(subfolderPath))
                         subfolderPath = $"{subfolderPathBase}({i++})";
-                    if (!ExportAttachmentsToDirectory(subFolder, subfolderPath, includeSubfolders))
+                    if (!ExportAttachmentsToDirectory(subFolder, subfolderPath, includeSubfolders, options))
                         ret = false;
                 }
             }
             return ret;
         }
 
-        public static bool ExportAttachmentsToDirectory(IEnumerable<XstAttachment>? attachments)
+        public static bool ExportAttachmentsToDirectory(XstMessage? message, string path, XstAttachmentExportOptions options)
         {
-            if (!(attachments?.Any() ?? false))
+            if (message == null)
                 return false;
 
-            if (FolderBrowserDialog.ShowDialog() != DialogResult.OK)
-                return false;
+            //if (!Directory.Exists(path))
+            //    Directory.CreateDirectory(path);
 
-            return ExportAttachmentsToDirectory(attachments, FolderBrowserDialog.SelectedPath);
+            bool ret = true;
+
+            var subfolderPath = path;
+            if (options.EachMessageInFolder)
+            {
+                var subfolderPathBase = Path.Combine(path, message.DisplayName.ReplaceInvalidFileNameChars("_"));
+                subfolderPath = subfolderPathBase;
+                int i = 1;
+                while (Directory.Exists(subfolderPath))
+                    subfolderPath = $"{subfolderPathBase}({i++})";
+            }
+            if (!ExportAttachmentsToDirectory(message.Attachments, subfolderPath, options))
+                ret = false;
+
+            return ret;
         }
-
-        public static bool ExportAttachmentsToDirectory(IEnumerable<XstAttachment>? attachments, string path)
+        public static bool ExportAttachmentsToDirectory(IEnumerable<XstAttachment>? attachments, string path, XstAttachmentExportOptions options)
         {
-            if (!(attachments?.Any() ?? false))
+            var attachmentsToExport = attachments?.Where(a => a.IsFile && (!a.IsHidden || options.IncludeHidden)).OrderBy(a => a.LastModificationTime);
+            if (!(attachmentsToExport?.Any() ?? false))
                 return false;
             bool ret = true;
-            foreach (var attachment in attachments)
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            foreach (var attachment in attachmentsToExport)
             {
                 string extension = Path.GetExtension(attachment.FileNameForSaving);
                 string fileNameBase = Path.Combine(path, Path.GetFileNameWithoutExtension(attachment.FileNameForSaving));

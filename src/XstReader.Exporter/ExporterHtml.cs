@@ -24,7 +24,7 @@ namespace XstReader.Exporter
         public XstExportOptions ExportOptions
         {
             get => _ExportOptions ??= new();
-            init => _ExportOptions = value;
+            set => _ExportOptions = value;
         }
 
 

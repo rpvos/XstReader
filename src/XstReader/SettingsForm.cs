@@ -20,7 +20,8 @@ namespace XstReader.App
 
         private void Initialize()
         {
-            PropertyGridSettings.SelectedObject = XstReaderEnvironment.Options.ExportOptions;
+            VisualizationPropertyGridSettings.SelectedObject = XstReaderEnvironment.Options.ViewOptions;
+            HtmlPropertyGridSettings.SelectedObject = XstReaderEnvironment.Options.HtmlExportOptions;
         }
     }
 }

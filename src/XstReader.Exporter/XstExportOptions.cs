@@ -14,13 +14,14 @@ namespace XstReader.Exporter
 {
     public class XstExportOptions
     {
-        [Category("Messages")]
-        [DisplayName("Show Headers in messages")]
-        [Description("Show message headers: Subject, To, From...")]
+
+        [Category("Message Header")]
+        [DisplayName("Show Headers")]
+        [Description("Show message headers in exported messages as HTML: Subject, To, From...")]
         public bool ShowHeadersInMessages { get; set; } = true;
 
-        [Category("Attachments")]
-        [DisplayName("Show Hidden Attachments in Header")]
+        [Category("Message Header")]
+        [DisplayName("Hidden Attachments")]
         [Description("Show hidden attachments in the list of Attachments in the message header")]
         public bool ShowHiddenAttachmentsInList { get; set; } = false;
 

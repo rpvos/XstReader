@@ -47,8 +47,7 @@
             this.MessagePrintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MessageExportAttachmentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MessageToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.ExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ConfigExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LayoutDefaultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,9 +85,9 @@
             this.FileToolStripMenuItem,
             this.FolderToolStripMenuItem,
             this.MessageToolStripMenuItem,
-            this.ExportToolStripMenuItem,
-            this.AboutToolStripMenuItem,
-            this.LayoutToolStripMenuItem});
+            this.SettingsToolStripMenuItem,
+            this.LayoutToolStripMenuItem,
+            this.AboutToolStripMenuItem});
             this.MainMenuSrip.Location = new System.Drawing.Point(0, 0);
             this.MainMenuSrip.Name = "MainMenuSrip";
             this.MainMenuSrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
@@ -211,26 +210,18 @@
             this.MessageToolStripSeparator.Name = "MessageToolStripSeparator";
             this.MessageToolStripSeparator.Size = new System.Drawing.Size(277, 6);
             // 
-            // ExportToolStripMenuItem
+            // SettingsToolStripMenuItem
             // 
-            this.ExportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ConfigExportToolStripMenuItem});
-            this.ExportToolStripMenuItem.Name = "ExportToolStripMenuItem";
-            this.ExportToolStripMenuItem.Size = new System.Drawing.Size(61, 24);
-            this.ExportToolStripMenuItem.Text = "Settings";
-            // 
-            // ConfigExportToolStripMenuItem
-            // 
-            this.ConfigExportToolStripMenuItem.Image = global::XstReader.App.Properties.Resources.cog;
-            this.ConfigExportToolStripMenuItem.Name = "ConfigExportToolStripMenuItem";
-            this.ConfigExportToolStripMenuItem.Size = new System.Drawing.Size(157, 26);
-            this.ConfigExportToolStripMenuItem.Text = "Export Options";
-            this.ConfigExportToolStripMenuItem.ToolTipText = "Export Options";
+            this.SettingsToolStripMenuItem.Image = global::XstReader.App.Properties.Resources.cog;
+            this.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
+            this.SettingsToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
+            this.SettingsToolStripMenuItem.Text = "Settings";
             // 
             // AboutToolStripMenuItem
             // 
+            this.AboutToolStripMenuItem.Image = global::XstReader.App.Properties.Resources.information;
             this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
-            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(107, 24);
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(127, 24);
             this.AboutToolStripMenuItem.Text = "About XstReader";
             // 
             // LayoutToolStripMenuItem
@@ -242,7 +233,6 @@
             this.LayoutToolStripMenuItem.Name = "LayoutToolStripMenuItem";
             this.LayoutToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
             this.LayoutToolStripMenuItem.Text = "Layout";
-            this.LayoutToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             // 
             // LayoutDefaultToolStripMenuItem
             // 
@@ -290,8 +280,7 @@
         private ToolStripMenuItem MessageToolStripMenuItem;
         private OpenFileDialog OpenXstFileDialog;
         private Krypton.Toolkit.KryptonPanel KryptonMessagePanel;
-        private ToolStripMenuItem ExportToolStripMenuItem;
-        private ToolStripMenuItem ConfigExportToolStripMenuItem;
+        private ToolStripMenuItem SettingsToolStripMenuItem;
         private ToolStripSeparator FileToolStripSeparator;
         private ToolStripMenuItem FileExportFoldersToolStripMenuItem;
         private ToolStripMenuItem FileExportAttachmentsToolStripMenuItem;
