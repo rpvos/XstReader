@@ -103,7 +103,7 @@ namespace XstReader
                 content.Save(stream, DataFormats.Rtf);
             }
             if (Message.Date != null)
-                File.SetCreationTime(fullFileName, (DateTime)Message.Date);
+                File.SetLastWriteTime(fullFileName, (DateTime)Message.Date);
         }
 
 #endif

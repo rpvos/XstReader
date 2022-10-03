@@ -146,7 +146,7 @@ namespace XstReader
                         stream.Write(bytes, 0, bytes.Count());
                     }
                     if (Message.Date != null)
-                        File.SetCreationTime(fullFileName, (DateTime)Message.Date);
+                        File.SetLastWriteTime(fullFileName, (DateTime)Message.Date);
                 }
             }
             else if (Message.Body.Format == XstMessageBodyFormat.Rtf)
@@ -166,7 +166,7 @@ namespace XstReader
                     stream.Write(bytes, 0, bytes.Count());
                 }
                 if (Message.Date != null)
-                    File.SetCreationTime(fullFileName, (DateTime)Message.Date);
+                    File.SetLastWriteTime(fullFileName, (DateTime)Message.Date);
             }
             if (includeVisibleAttachments)
                 SaveVisibleAttachmentsToAssociatedFolder(Message, fullFileName);
@@ -183,7 +183,7 @@ namespace XstReader
                 {
                     Directory.CreateDirectory(targetFolder);
                     if (message.Date != null)
-                        Directory.SetCreationTime(targetFolder, (DateTime)message.Date);
+                        Directory.SetLastWriteTime(targetFolder, (DateTime)message.Date);
                 }
                 message.Attachments.VisibleFiles().SaveToFolder(targetFolder, message.Date);
             }

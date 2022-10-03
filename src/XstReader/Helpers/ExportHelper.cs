@@ -8,7 +8,6 @@
 //
 // Copyright (c) 2021, iluvadev, and released under Ms-PL License.
 
-using RtfPipe.Tokens;
 using XstReader.Exporter;
 
 namespace XstReader.App.Helpers
@@ -90,8 +89,10 @@ namespace XstReader.App.Helpers
                 while (Directory.Exists(subfolderPath))
                     subfolderPath = $"{subfolderPathBase}({i++})";
             }
-            if (!ExportAttachmentsToDirectory(message.Attachments, subfolderPath, options))
-                ret = false;
+            ret = ExportAttachmentsToDirectory(message.Attachments, subfolderPath, options);
+
+            if (Directory.Exists(subfolderPath))
+                Directory.SetLastWriteTime(subfolderPath, message.Date ?? DateTime.Now);
 
             return ret;
         }
@@ -192,7 +193,7 @@ namespace XstReader.App.Helpers
             {
                 File.WriteAllText(fileName, message.RenderAsHtml(false));
                 if (message.Date.HasValue)
-                    File.SetCreationTime(fileName, message.Date.Value);
+                    File.SetLastWriteTime(fileName, message.Date.Value);
             }
             catch { return false; }
             return true;

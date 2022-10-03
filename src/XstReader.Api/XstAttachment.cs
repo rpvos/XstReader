@@ -390,7 +390,7 @@ namespace XstReader
                 creationTime = LastModificationTime;
 
             if (creationTime != null)
-                System.IO.File.SetCreationTime(fullFileName, (DateTime)creationTime);
+                System.IO.File.SetLastWriteTime(fullFileName, (DateTime)creationTime);
         }
         /// <summary>
         /// Save the Attachment to a Stream
