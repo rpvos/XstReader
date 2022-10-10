@@ -10,7 +10,7 @@
 
 namespace XstReader.Exporter
 {
-    public static class XstAttachmentExtensions
+    internal static class XstAttachmentExtensions
     {
         public static string SizeWithMagnitude(this XstAttachment attachment)
         {

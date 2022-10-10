@@ -12,7 +12,7 @@ namespace XstReader.App
 {
     internal static class XstReaderEnvironment
     {
-        public static XstReaderOptions Options { get; } = new XstReaderOptions();
+        public static XstReaderOptions Options { get; internal set; } = new XstReaderOptions();
 
     }
 }

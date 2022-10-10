@@ -26,13 +26,9 @@ namespace XstReader.App
                 exporter.ExportOptions.ShowDetails = false;
             }
             else
-                exporter.ExportOptions = XstReaderEnvironment.Options.HtmlExportOptions;
+                exporter.ExportOptions = XstReaderEnvironment.Options.ExportOptions;
 
             return exporter.Render(message);
         }
-
-        public static string GetFilenameForExport(this XstMessage? message)
-            => message?.DisplayName.ReplaceInvalidFileNameChars("_") ?? "No_Name";
-
     }
 }

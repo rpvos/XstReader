@@ -57,4 +57,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="kryptonLabel4.Values.Text" xml:space="preserve">
+    <value>$yyyy -&gt; The year as a four-digit number.
+$MM -&gt; The month, from 01 through 12.
+$dd -&gt;The day of the month, from 01 through 31.
+$HH -&gt; The hour, from 00 to 23.
+$mm -&gt; The minute, from 00 through 59.
+$ss -&gt; The second, from 0 through 59.
+
+$folder -&gt; The folder name
+$subject -&gt; The message subject</value>
+  </data>
 </root>

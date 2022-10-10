@@ -436,12 +436,18 @@ namespace XstReader
         /// </summary>
         /// <returns></returns>
         public virtual IEnumerable<XstAttachment> GetAttachments()
-            => _Attachments ?? (_Attachments = GetAttachmentsInternal());
+        {
+            if (_Attachments == null)
+                try { _Attachments = GetAttachmentsInternal(); }
+                catch { _Attachments = Enumerable.Empty<XstAttachment>(); }
+
+            return _Attachments;
+        }
 
         private IEnumerable<XstAttachment> GetAttachmentsInternal()
         {
             if (!HasAttachments)
-                return new XstAttachment[0];
+                return Enumerable.Empty<XstAttachment>();
 
             // Read any attachments
             var attachmentsNid = new NID(EnidSpecial.NID_ATTACHMENT_TABLE);

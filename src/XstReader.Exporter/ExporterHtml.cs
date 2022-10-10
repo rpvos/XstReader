@@ -108,11 +108,11 @@ namespace XstReader.Exporter
 
             RenderAttachmentsInHeader(message.Attachments.Where(a => !a.IsHidden && a.IsFile), "Attachments (files)", sb);
             RenderAttachmentsInHeader(message.Attachments.Where(a => !a.IsHidden && a.IsEmail), "Attachments (emails)", sb);
-            if (ExportOptions.ShowHiddenAttachmentsInList)
-            {
-                RenderAttachmentsInHeader(message.Attachments.Where(a => a.IsHidden && a.IsFile), "Attachments (hidden files)", sb);
-                RenderAttachmentsInHeader(message.Attachments.Where(a => a.IsHidden && a.IsEmail), "Attachments (hidden emails)", sb);
-            }
+            //if (ExportOptions.ShowHiddenAttachmentsInList)
+            //{
+            //    RenderAttachmentsInHeader(message.Attachments.Where(a => a.IsHidden && a.IsFile), "Attachments (hidden files)", sb);
+            //    RenderAttachmentsInHeader(message.Attachments.Where(a => a.IsHidden && a.IsEmail), "Attachments (hidden emails)", sb);
+            //}
             sb.AppendLine("</p>");
         }
         private void RenderRecipientsInHeader(IEnumerable<XstRecipient> recipients, string label, StringBuilder sb)

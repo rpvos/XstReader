@@ -141,11 +141,17 @@ namespace XstReader
         public IEnumerable<XstFolder> GetFolders()
         {
             if (_Folders == null)
-                _Folders = Ltp.ReadTableRowIds(NID.TypedNID(EnidType.HIERARCHY_TABLE, Nid))
-                              .Where(id => id.nidType == EnidType.NORMAL_FOLDER)
-                              .Select(id => new XstFolder(XstFile, id, this))
-                              .OrderBy(sf => sf.DisplayName);
-
+                try
+                {
+                    _Folders = Ltp.ReadTableRowIds(NID.TypedNID(EnidType.HIERARCHY_TABLE, Nid))
+                                  .Where(id => id.nidType == EnidType.NORMAL_FOLDER)
+                                  .Select(id => new XstFolder(XstFile, id, this))
+                                  .OrderBy(sf => sf.DisplayName);
+                }
+                catch
+                {
+                    _Folders = Enumerable.Empty<XstFolder>();
+                }
             return _Folders;
         }
         #endregion Folders
@@ -160,13 +166,20 @@ namespace XstReader
             if (_Messages == null)
             {
                 if (ContentCount > 0)
-                    // Get the Contents table for the folder
-                    // For 4K, not all the properties we want are available in the Contents table, so supplement them from the Message itself
-                    _Messages = Ltp.ReadTable<XstMessage>(NID.TypedNID(EnidType.CONTENTS_TABLE, Nid),
-                                                          (m, id) => m.Initialize(new NID(id), this),
-                                                          m => m.ProcessSignedOrEncrypted());
+                    try
+                    {
+                        // Get the Contents table for the folder
+                        // For 4K, not all the properties we want are available in the Contents table, so supplement them from the Message itself
+                        _Messages = Ltp.ReadTable<XstMessage>(NID.TypedNID(EnidType.CONTENTS_TABLE, Nid),
+                                                              (m, id) => m.Initialize(new NID(id), this),
+                                                              m => m.ProcessSignedOrEncrypted());
+                    }
+                    catch
+                    {
+                        _Messages = Enumerable.Empty<XstMessage>();
+                    }
                 else
-                    _Messages = new XstMessage[0];
+                    _Messages = Enumerable.Empty<XstMessage>();
             }
             return _Messages;
         }

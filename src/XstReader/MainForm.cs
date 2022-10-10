@@ -72,7 +72,6 @@ namespace XstReader.App
         private XstFile? GetCurrentXstFile() => FolderTreeControl.GetDataSource();
         private XstFolder? GetCurrentXstFolder() => FolderTreeControl.GetSelectedItem();
         private XstMessage? GetCurrentXstMessage() => MessageViewControl.GetDataSource();
-        private IEnumerable<XstAttachment>? GetCurrentXstAttachmentsToExport(XstAttachmentExportOptions options) => GetCurrentXstMessage()?.Attachments?.Where(a => a.IsFile && !a.IsHidden);
 
         private void UpdateMenu()
         {
@@ -81,8 +80,6 @@ namespace XstReader.App
                 GetCurrentXstFile() != null;
 
             FolderToolStripMenuItem.Enabled = GetCurrentXstFolder() != null;
-            FolderExportFoldersToolStripMenuItem.Enabled = GetCurrentXstFolder()?.Folders?.Any() ?? false;
-
             MessageToolStripMenuItem.Enabled = GetCurrentXstMessage() != null;
             MessageExportAttachmentsToolStripMenuItem.Enabled = GetCurrentXstMessage()?.Attachments?.Any(a => a.IsFile) ?? false;
         }
@@ -107,78 +104,59 @@ namespace XstReader.App
             MessageViewControl.SelectedItemChanged += (s, e) => CurrentXstElement = e.Element;
             MessageViewControl.GotFocus += (s, e) => CurrentXstElement = MessageViewControl.GetSelectedItem();
 
-            SettingsToolStripMenuItem.Click += (s, e) => { using var f = new SettingsForm(); f.ShowDialog(); };
-
-
             AboutToolStripMenuItem.Click += (s, e) => { using var f = new AboutForm(); f.ShowDialog(); };
 
             FileExportFoldersToolStripMenuItem.Click += (s, e) =>
             {
                 string path = string.Empty;
                 var elem = GetCurrentXstFile();
-                if (elem != null && ExportHelper.AskDirectoryPath(ref path))
+                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
                     DoInWait($"Exporting all Folders and Messages from {elem.FileName}",
-                             () => ExportHelper.ExportFolderToHtmlFiles(elem.RootFolder, path, true));
+                             () => ExportHelper.ExportFolderToHtmlFiles(elem.RootFolder, path));
             };
             FileExportAttachmentsToolStripMenuItem.Click += (s, e) =>
             {
                 string path = string.Empty;
                 var elem = GetCurrentXstFile();
-                var options = XstReaderEnvironment.Options.AttachmentExportOptions;
-                if (elem != null &&
-                    new ExportAttachmentOptionsForm(options).ShowDialog() == DialogResult.OK &&
-                    ExportHelper.AskDirectoryPath(ref path))
+                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
                     DoInWait($"Exporting all Attachments from {elem.FileName}",
-                             () => ExportHelper.ExportAttachmentsToDirectory(elem.RootFolder, path, true, options));
+                             () => ExportHelper.ExportAttachmentsToDirectory(elem.RootFolder, path));
             };
 
-            FolderExportFoldersToolStripMenuItem.Click += (s, e) =>
-            {
-                string path = string.Empty;
-                var elem = GetCurrentXstFolder();
-                if (elem != null && ExportHelper.AskDirectoryPath(ref path))
-                    DoInWait($"Exporting all Folders and Messages from folder {elem.Path}",
-                             () => ExportHelper.ExportFolderToHtmlFiles(elem, path, true));
-            };
             FolderExportMessagesToolStripMenuItem.Click += (s, e) =>
             {
                 string path = string.Empty;
                 var elem = GetCurrentXstFolder();
-                if (elem != null && ExportHelper.AskDirectoryPath(ref path))
+                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
                     DoInWait($"Exporting all Messages in folder {elem.Path}",
-                             () => ExportHelper.ExportFolderToHtmlFiles(elem, path, false));
+                             () => ExportHelper.ExportFolderToHtmlFiles(elem, path));
             };
             FolderExportAttachmentsToolStripMenuItem.Click += (s, e) =>
             {
                 string path = string.Empty;
                 var elem = GetCurrentXstFolder();
-                var options = XstReaderEnvironment.Options.AttachmentExportOptions;
-                if (elem != null &&
-                    new ExportAttachmentOptionsForm(options).ShowDialog() == DialogResult.OK && 
-                    ExportHelper.AskDirectoryPath(ref path))
+                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
                     DoInWait($"Exporting all Attachments from folder {elem.Path}",
-                             () => ExportHelper.ExportAttachmentsToDirectory(elem, path, true, options));
+                             () => ExportHelper.ExportAttachmentsToDirectory(elem, path));
             };
             MessagePrintToolStripMenuItem.Click += (s, e) => MessageViewControl.Print();
             MessageExportToolStripMenuItem.Click += (s, e) =>
             {
-                string fileName = GetCurrentXstMessage()?.GetFilenameForExport() ?? "none" + ".html";
+                string path = string.Empty;
                 var elem = GetCurrentXstMessage();
-                if (elem != null && ExportHelper.AskFileName(ref fileName))
+                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
                     DoInWait($"Exporting Message {elem.Path}",
-                             () => ExportHelper.ExportMessageToHtmlFile(elem, fileName));
+                             () => ExportHelper.ExportMessageToHtmlFile(elem, path, true));
             };
             MessageExportAttachmentsToolStripMenuItem.Click += (s, e) =>
             {
                 string path = string.Empty;
                 var elem = GetCurrentXstMessage();
-                var options = XstReaderEnvironment.Options.AttachmentExportOptions;
-                if (elem != null && 
-                    new ExportAttachmentOptionsForm(options).ShowDialog() == DialogResult.OK && 
-                    ExportHelper.AskDirectoryPath(ref path))
+                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
                     DoInWait($"Exporting Attachments from message {elem.Path}",
-                             () => ExportHelper.ExportAttachmentsToDirectory(elem, path, options));
+                             () => ExportHelper.ExportAttachmentsToDirectory(elem, path));
             };
+            SettingsToolStripMenuItem.Click += (s, e) => new ExportOptionsForm().ShowDialog();
 
             LayoutDefaultToolStripMenuItem.Click += (s, e) =>
             {
@@ -207,7 +185,8 @@ namespace XstReader.App
             UpdateMenu();
         }
 
-        private void DoInWait(string description, Action action)
+
+        private static void DoInWait(string description, Action action)
             => WaitingForm.Execute(description, action);
 
         private void OpenXstFile(object? sender, EventArgs e)
@@ -249,6 +228,9 @@ namespace XstReader.App
             try { KryptonDockingManager.SaveConfigToFile(Path.Combine(Application.StartupPath, "Layout.xml")); }
             catch { }
 
+            try { XstReaderOptions.SaveToFile(Path.Combine(Application.StartupPath, "Options.xml"), XstReaderEnvironment.Options); }
+            catch { }
+
             Reset();
             base.OnClosed(e);
         }
@@ -275,16 +257,9 @@ namespace XstReader.App
             try { KryptonDockingManager.LoadConfigFromFile(Path.Combine(Application.StartupPath, "Layout.xml")); }
             catch { LayoutDefaultToolStripMenuItem.PerformClick(); }
             KryptonMessagePanel.EndInit();
-        }
 
-        private void saveLayoutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            KryptonDockingManager.SaveConfigToFile(@"C:\dev\pst\layout.xml");
-        }
-
-        private void loadLayoutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            KryptonDockingManager.LoadConfigFromFile(@"C:\dev\pst\layout.xml");
+            try { XstReaderEnvironment.Options = XstReaderOptions.LoadFromFile(Path.Combine(Application.StartupPath, "Options.xml")); }
+            catch { }
         }
     }
 }

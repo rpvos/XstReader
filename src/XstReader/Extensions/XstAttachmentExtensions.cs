@@ -32,7 +32,7 @@ namespace XstReader.App
                        value.ToLowerInvariant() == "application/pdf";
             }
 
-            var extension = Path.GetExtension(attachment.LongFileName).ToLowerInvariant().Replace(".", "");
+            var extension = Path.GetExtension(attachment.LongFileName??attachment.FileName).ToLowerInvariant().Replace(".", "");
             return extension == "png" ||
                    extension == "jpg" ||
                    extension == "jpeg" ||

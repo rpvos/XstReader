@@ -54,7 +54,7 @@ namespace XstReader
         [Description(@"Contains the display name of the folder.")]
         public override string DisplayName
         {
-            get => base.DisplayName ?? LongFileName;
+            get => base.DisplayName ?? LongFileName ?? FileName;
             protected set => base.DisplayName = value;
         }
 

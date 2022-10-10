@@ -36,6 +36,7 @@ Original project: https://github.com/dijji/XstReader</Description>
 
   <ItemGroup>
     <Compile Remove="ElementProperties\StandardProperties.cs" />
+    <Compile Remove="XstPropertySet - còpia.cs" />
   </ItemGroup>
 
   <ItemGroup>

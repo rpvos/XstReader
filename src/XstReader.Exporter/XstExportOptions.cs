@@ -14,41 +14,37 @@ namespace XstReader.Exporter
 {
     public class XstExportOptions
     {
+        //IEPA!!
+        //TODO:
+        // Els Attachments exportats SEMPRE aniran en subcarpeta amb nom del missatge
+        // Si no EmbedAttachmentsInFile, s'exportaran els Attachments (link)
+        // Desar opcions
 
-        [Category("Message Header")]
-        [DisplayName("Show Headers")]
-        [Description("Show message headers in exported messages as HTML: Subject, To, From...")]
+        public string FolderDirectoryPattern { get; set; } = "_$yyyy$MM$dd.$HH$mm$ss-$folder";
+        public bool IncludeSubfolders { get; set; } = true;
+
+        public string MessageFilePattern { get; set; } = "$yyyy$MM$dd.$HH$mm$ss-$subject";
         public bool ShowHeadersInMessages { get; set; } = true;
-
-        [Category("Message Header")]
-        [DisplayName("Hidden Attachments")]
-        [Description("Show hidden attachments in the list of Attachments in the message header")]
-        public bool ShowHiddenAttachmentsInList { get; set; } = false;
-
-        [Category("Attachments")]
-        [DisplayName("Embed Attachments")]
-        [Description("Embed all attachments of messages in exported file")]
-        public bool EmbedAttachmentsInFile { get; set; } = true;
-
-
-        [Category("Messages")]
-        [DisplayName("Show Details")]
-        [Description("Show section Details in exported file")]
         public bool ShowDetails { get; set; } = true;
-
-        [Category("Properties")]
-        [DisplayName("Show Properties description")]
-        [Description("Show section with all description of used known properties")]
         public bool ShowPropertiesDescriptions { get; set; } = true;
+        public bool EmbedAttachmentsInFile { get; set; } = true;
+        public bool ExportAttachments { get; set; } = true;
+
+        public bool ExportHiddenAttachments { get; set; } = false;
 
 
         public XstExportOptions Clone()
             => new XstExportOptions
             {
+                FolderDirectoryPattern = FolderDirectoryPattern,
+                IncludeSubfolders = IncludeSubfolders,
+                MessageFilePattern = MessageFilePattern,
                 ShowHeadersInMessages = ShowHeadersInMessages,
-                ShowHiddenAttachmentsInList = ShowHiddenAttachmentsInList,
-                EmbedAttachmentsInFile = EmbedAttachmentsInFile,
+                ShowDetails = ShowDetails,
                 ShowPropertiesDescriptions = ShowPropertiesDescriptions,
+                EmbedAttachmentsInFile = EmbedAttachmentsInFile,
+                ExportAttachments = ExportAttachments,
+                ExportHiddenAttachments = ExportHiddenAttachments,
             };
     }
 }

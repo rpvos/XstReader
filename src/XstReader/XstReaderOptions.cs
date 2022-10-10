@@ -8,18 +8,31 @@
 //
 // Copyright (c) 2021, iluvadev, and released under Ms-PL License.
 
-using System.ComponentModel;
+using System.Xml;
+using System.Xml.Serialization;
 using XstReader.Exporter;
 
 namespace XstReader.App
 {
-    internal class XstReaderOptions
+    public class XstReaderOptions
     {
         public XstReaderViewOptions ViewOptions { get; set; } = new XstReaderViewOptions();
+        public XstExportOptions ExportOptions { get; set; } = new XstExportOptions();
 
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public XstExportOptions HtmlExportOptions { get; set; } = new XstExportOptions();
+        public static void SaveToFile(string fileName, XstReaderOptions options)
+        {
+            var serializer = new XmlSerializer(options.GetType());
+            using (var writer = XmlWriter.Create(fileName))
+                serializer.Serialize(writer, options);
+        }
 
-        public XstAttachmentExportOptions AttachmentExportOptions { get; set; } = new XstAttachmentExportOptions();
+        public static XstReaderOptions LoadFromFile(string fileName)
+        {
+            XstReaderOptions options;
+            var serializer = new XmlSerializer(typeof(XstReaderOptions));
+            using (var reader = XmlReader.Create(fileName))
+                options = (XstReaderOptions?)serializer.Deserialize(reader) ?? new XstReaderOptions();
+            return options;
+        }
     }
 }
