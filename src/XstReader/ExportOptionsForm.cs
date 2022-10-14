@@ -33,8 +33,8 @@ namespace XstReader.App
         private void Initialize()
         {
             Options = XstReaderEnvironment.Options.ExportOptions;
-            OkButton.Click += OkButton_Click;
-            CancelButton.Click += CancelButton_Click;
+            UserOkButton.Click += OkButton_Click;
+            UserCancelButton.Click += CancelButton_Click;
         }
 
         private void OkButton_Click(object? sender, EventArgs e)

@@ -156,6 +156,13 @@ namespace XstReader.App
                     DoInWait($"Exporting Attachments from message {elem.Path}",
                              () => ExportHelper.ExportAttachmentsToDirectory(elem, path));
             };
+            MessageSaveAsMsgToolStripMenuItem.Click += (s, e) =>
+            {
+                var elem = GetCurrentXstMessage();
+                if (elem != null)
+                    (new ExporterMsg()).Export(elem, @"C:\Dev\pst\prv\mail.msg");
+            };
+
             SettingsToolStripMenuItem.Click += (s, e) => new ExportOptionsForm().ShowDialog();
 
             LayoutDefaultToolStripMenuItem.Click += (s, e) =>

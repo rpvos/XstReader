@@ -97,8 +97,8 @@ namespace XstReader
                 _Items = GetRecipientsInternal().ToList();
                 _Items.Add(new XstRecipient(Message, GetPropertiesOriginalSentRepresenting, true));
                 _Items.Add(new XstRecipient(Message, GetPropertiesSentRepresenting, true));
-                _Items.Add(new XstRecipient(Message, GetPropertiesReceivedRepresenting, true));
                 _Items.Add(new XstRecipient(Message, GetPropertiesSender, true));
+                _Items.Add(new XstRecipient(Message, GetPropertiesReceivedRepresenting, true));
                 _Items.Add(new XstRecipient(Message, GetPropertiesReceivedBy, true));
             }
             return _Items.Where(r => r.Properties.Items.Any(p => p.Tag != PropertyCanonicalName.PidTagRecipientType));

@@ -71,6 +71,14 @@ namespace XstReader
             protected set => _Properties = value;
         }
 
+        /// <summary>
+        /// Gets the Property Value if exists
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        public dynamic PropertyValue(PropertyCanonicalName tag)
+            => Properties[tag]?.Value;
+
         private string _DisplayName = null;
         /// <summary>
         /// The Name of the Element
@@ -130,7 +138,7 @@ namespace XstReader
         /// <summary>
         /// Clear all Contents
         /// </summary>
-        public void ClearContents()
+        public virtual void ClearContents()
         {
             new Thread(() => { ClearContentsInternal(); GC.Collect(); }).Start();
         }

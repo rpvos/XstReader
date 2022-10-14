@@ -46,12 +46,13 @@
             this.MessagePrintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MessageExportAttachmentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MessageToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LayoutDefaultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LayoutClassic3PanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenXstFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MessageSaveAsMsgToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.KryptonMainPanel)).BeginInit();
             this.KryptonMainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.KryptonMessagePanel)).BeginInit();
@@ -169,7 +170,8 @@
             this.MessageExportToolStripMenuItem,
             this.MessagePrintToolStripMenuItem,
             this.MessageExportAttachmentsToolStripMenuItem,
-            this.MessageToolStripSeparator});
+            this.MessageToolStripSeparator,
+            this.MessageSaveAsMsgToolStripMenuItem});
             this.MessageToolStripMenuItem.Image = global::XstReader.App.Properties.Resources.email_outline;
             this.MessageToolStripMenuItem.Name = "MessageToolStripMenuItem";
             this.MessageToolStripMenuItem.Size = new System.Drawing.Size(85, 24);
@@ -200,6 +202,13 @@
             // 
             this.MessageToolStripSeparator.Name = "MessageToolStripSeparator";
             this.MessageToolStripSeparator.Size = new System.Drawing.Size(277, 6);
+            // 
+            // SettingsToolStripMenuItem
+            // 
+            this.SettingsToolStripMenuItem.Image = global::XstReader.App.Properties.Resources.cog;
+            this.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
+            this.SettingsToolStripMenuItem.Size = new System.Drawing.Size(118, 24);
+            this.SettingsToolStripMenuItem.Text = "Export Options";
             // 
             // LayoutToolStripMenuItem
             // 
@@ -234,12 +243,11 @@
             // 
             this.OpenXstFileDialog.Filter = "xst files (*.ost;*.pst)|*.ost;*.pst|All files (*.*)|*.*";
             // 
-            // SettingsToolStripMenuItem
+            // MessageSaveAsMsgToolStripMenuItem
             // 
-            this.SettingsToolStripMenuItem.Image = global::XstReader.App.Properties.Resources.cog;
-            this.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
-            this.SettingsToolStripMenuItem.Size = new System.Drawing.Size(118, 24);
-            this.SettingsToolStripMenuItem.Text = "Export Options";
+            this.MessageSaveAsMsgToolStripMenuItem.Name = "MessageSaveAsMsgToolStripMenuItem";
+            this.MessageSaveAsMsgToolStripMenuItem.Size = new System.Drawing.Size(280, 26);
+            this.MessageSaveAsMsgToolStripMenuItem.Text = "As msg";
             // 
             // MainForm
             // 
@@ -286,5 +294,6 @@
         private ToolStripMenuItem LayoutClassic3PanelToolStripMenuItem;
         private ToolStripMenuItem AboutToolStripMenuItem;
         private ToolStripMenuItem SettingsToolStripMenuItem;
+        private ToolStripMenuItem MessageSaveAsMsgToolStripMenuItem;
     }
 }

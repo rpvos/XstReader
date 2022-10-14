@@ -75,7 +75,7 @@ namespace XstReader
         /// </summary>
         /// <param name="message"></param>
         /// <param name="propertiesGetter"></param>
-        /// param name="isGeneratedFromMessageProperties">
+        /// <param name="isGeneratedFromMessageProperties"></param>
         public XstRecipient(XstMessage message, Func<IEnumerable<XstProperty>> propertiesGetter, bool isGeneratedFromMessageProperties) : this()
         {
             Message = message;

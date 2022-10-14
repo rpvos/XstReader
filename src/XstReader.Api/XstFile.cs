@@ -28,10 +28,10 @@ namespace XstReader
     public class XstFile : XstElement, IDisposable
     {
         private NDB _Ndb;
-        internal NDB Ndb => _Ndb ?? (_Ndb = new NDB(this));
+        internal new NDB Ndb => _Ndb ?? (_Ndb = new NDB(this));
 
         private LTP _Ltp;
-        internal LTP Ltp => _Ltp ?? (_Ltp = new LTP(Ndb));
+        internal new LTP Ltp => _Ltp ?? (_Ltp = new LTP(Ndb));
 
         private string _FileName = null;
         /// <summary>
@@ -108,7 +108,7 @@ namespace XstReader
         /// <summary>
         /// Clears all information and memory used by the object
         /// </summary>
-        public void ClearContents()
+        public override void ClearContents()
         {
             ClearStream();
             ClearRootFolder();

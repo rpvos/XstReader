@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MsgKit\MsgKit.csproj" />
     <ProjectReference Include="..\XstReader.Api\XstReader.Api.csproj" />
     <ProjectReference Include="..\XstReader.Common\XstReader.App.Common.csproj" />
   </ItemGroup>

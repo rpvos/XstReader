@@ -30,8 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExportOptionsForm));
             this.BottomPanel = new Krypton.Toolkit.KryptonPanel();
-            this.CancelButton = new System.Windows.Forms.Button();
-            this.OkButton = new System.Windows.Forms.Button();
+            this.UserCancelButton = new System.Windows.Forms.Button();
+            this.UserOkButton = new System.Windows.Forms.Button();
             this.MainPanel = new Krypton.Toolkit.KryptonPanel();
             this.AttributePanel = new Krypton.Toolkit.KryptonPanel();
             this.AttributeExportHiddenCheckBox = new Krypton.Toolkit.KryptonCheckBox();
@@ -69,8 +69,8 @@
             // 
             // BottomPanel
             // 
-            this.BottomPanel.Controls.Add(this.CancelButton);
-            this.BottomPanel.Controls.Add(this.OkButton);
+            this.BottomPanel.Controls.Add(this.UserCancelButton);
+            this.BottomPanel.Controls.Add(this.UserOkButton);
             this.BottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomPanel.Location = new System.Drawing.Point(0, 454);
             this.BottomPanel.Name = "BottomPanel";
@@ -79,23 +79,23 @@
             // 
             // CancelButton
             // 
-            this.CancelButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.CancelButton.Location = new System.Drawing.Point(0, 6);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(87, 31);
-            this.CancelButton.TabIndex = 1;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
+            this.UserCancelButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.UserCancelButton.Location = new System.Drawing.Point(0, 6);
+            this.UserCancelButton.Name = "CancelButton";
+            this.UserCancelButton.Size = new System.Drawing.Size(87, 31);
+            this.UserCancelButton.TabIndex = 1;
+            this.UserCancelButton.Text = "Cancel";
+            this.UserCancelButton.UseVisualStyleBackColor = true;
             // 
             // OkButton
             // 
-            this.OkButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.OkButton.Location = new System.Drawing.Point(588, 9);
-            this.OkButton.Name = "OkButton";
-            this.OkButton.Size = new System.Drawing.Size(87, 31);
-            this.OkButton.TabIndex = 0;
-            this.OkButton.Text = "OK";
-            this.OkButton.UseVisualStyleBackColor = true;
+            this.UserOkButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.UserOkButton.Location = new System.Drawing.Point(588, 9);
+            this.UserOkButton.Name = "OkButton";
+            this.UserOkButton.Size = new System.Drawing.Size(87, 31);
+            this.UserOkButton.TabIndex = 0;
+            this.UserOkButton.Text = "OK";
+            this.UserOkButton.UseVisualStyleBackColor = true;
             // 
             // MainPanel
             // 
@@ -332,7 +332,7 @@
             // 
             // ExportOptionsForm
             // 
-            this.AcceptButton = this.OkButton;
+            this.AcceptButton = this.UserOkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(675, 497);
@@ -365,8 +365,8 @@
         #endregion
 
         private Krypton.Toolkit.KryptonPanel BottomPanel;
-        private Button CancelButton;
-        private Button OkButton;
+        private Button UserCancelButton;
+        private Button UserOkButton;
         private Krypton.Toolkit.KryptonPanel MainPanel;
         private Krypton.Toolkit.KryptonLabel FoldersKryptonLabel;
         private Krypton.Toolkit.KryptonLabel MessageKryptonLabel;
