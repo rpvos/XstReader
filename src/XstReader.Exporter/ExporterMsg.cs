@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MsgKit;
+using XstReader.Exporter.MsgKit;
 
 namespace XstReader.Exporter
 {
