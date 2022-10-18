@@ -106,62 +106,15 @@ namespace XstReader.App
 
             AboutToolStripMenuItem.Click += (s, e) => { using var f = new AboutForm(); f.ShowDialog(); };
 
-            FileExportFoldersToolStripMenuItem.Click += (s, e) =>
-            {
-                string path = string.Empty;
-                var elem = GetCurrentXstFile();
-                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
-                    DoInWait($"Exporting all Folders and Messages from {elem.FileName}",
-                             () => ExportHelper.ExportFolderToHtmlFiles(elem.RootFolder, path));
-            };
-            FileExportAttachmentsToolStripMenuItem.Click += (s, e) =>
-            {
-                string path = string.Empty;
-                var elem = GetCurrentXstFile();
-                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
-                    DoInWait($"Exporting all Attachments from {elem.FileName}",
-                             () => ExportHelper.ExportAttachmentsToDirectory(elem.RootFolder, path));
-            };
+            FileExportFoldersToolStripMenuItem.Click += (s, e) => ExportHelper.ExportMessages(GetCurrentXstFile());
+            FileExportAttachmentsToolStripMenuItem.Click += (s, e) => ExportHelper.ExportAttachments(GetCurrentXstFile());
 
-            FolderExportMessagesToolStripMenuItem.Click += (s, e) =>
-            {
-                string path = string.Empty;
-                var elem = GetCurrentXstFolder();
-                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
-                    DoInWait($"Exporting all Messages in folder {elem.Path}",
-                             () => ExportHelper.ExportFolderToHtmlFiles(elem, path));
-            };
-            FolderExportAttachmentsToolStripMenuItem.Click += (s, e) =>
-            {
-                string path = string.Empty;
-                var elem = GetCurrentXstFolder();
-                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
-                    DoInWait($"Exporting all Attachments from folder {elem.Path}",
-                             () => ExportHelper.ExportAttachmentsToDirectory(elem, path));
-            };
+            FolderExportMessagesToolStripMenuItem.Click += (s, e) => ExportHelper.ExportMessages(GetCurrentXstFolder());
+            FolderExportAttachmentsToolStripMenuItem.Click += (s, e) => ExportHelper.ExportAttachments(GetCurrentXstFolder());
+
             MessagePrintToolStripMenuItem.Click += (s, e) => MessageViewControl.Print();
-            MessageExportToolStripMenuItem.Click += (s, e) =>
-            {
-                string path = string.Empty;
-                var elem = GetCurrentXstMessage();
-                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
-                    DoInWait($"Exporting Message {elem.Path}",
-                             () => ExportHelper.ExportMessageToHtmlFile(elem, path, true));
-            };
-            MessageExportAttachmentsToolStripMenuItem.Click += (s, e) =>
-            {
-                string path = string.Empty;
-                var elem = GetCurrentXstMessage();
-                if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
-                    DoInWait($"Exporting Attachments from message {elem.Path}",
-                             () => ExportHelper.ExportAttachmentsToDirectory(elem, path));
-            };
-            MessageSaveAsMsgToolStripMenuItem.Click += (s, e) =>
-            {
-                var elem = GetCurrentXstMessage();
-                if (elem != null)
-                    (new ExporterMsg()).Export(elem, @"C:\Dev\pst\prv\mail.msg");
-            };
+            MessageExportToolStripMenuItem.Click += (s, e) => ExportHelper.ExportMessages(GetCurrentXstMessage());
+            MessageExportAttachmentsToolStripMenuItem.Click += (s, e) => ExportHelper.ExportAttachments(GetCurrentXstMessage());
 
             SettingsToolStripMenuItem.Click += (s, e) => new ExportOptionsForm().ShowDialog();
 
@@ -192,9 +145,6 @@ namespace XstReader.App
             UpdateMenu();
         }
 
-
-        private static void DoInWait(string description, Action action)
-            => WaitingForm.Execute(description, action);
 
         private void OpenXstFile(object? sender, EventArgs e)
         {

@@ -65,7 +65,7 @@ namespace XstReader.Exporter.MsgKit.Structures
         /// <remarks>
         ///     Optional
         /// </remarks>
-        public string Name { get; internal set; }
+        public string? Name { get; internal set; }
 
         /// <summary>
         ///     A <see cref="Guid" />

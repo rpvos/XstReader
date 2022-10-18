@@ -14,28 +14,24 @@ using XstReader.ElementProperties;
 
 namespace XstReader.Exporter
 {
-    public class ExporterHtml
+    public class MessageToSingleHtml
     {
         private Dictionary<PropertyCanonicalName, KnownCanonicalNameProperty>? _UsedProperties = null;
         private Dictionary<PropertyCanonicalName, KnownCanonicalNameProperty> UsedProperties => _UsedProperties ??= new();
-
-
-        private XstExportOptions? _ExportOptions = null;
-        public XstExportOptions ExportOptions
+        private ExportHtmlOptions? _ExportOptions = null;
+        public ExportHtmlOptions ExportOptions
         {
             get => _ExportOptions ??= new();
             set => _ExportOptions = value;
         }
 
 
-
-        public ExporterHtml()
-        {
-        }
-        public ExporterHtml(XstExportOptions exportOptions)
+        #region Ctor
+        public MessageToSingleHtml(ExportHtmlOptions exportOptions) 
         {
             ExportOptions = exportOptions;
         }
+        #endregion Ctor
 
         public string Render(XstMessage message)
         {

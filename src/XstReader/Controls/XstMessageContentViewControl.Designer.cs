@@ -32,8 +32,8 @@
             this.KryptonWebBrowser = new Krypton.Toolkit.KryptonWebBrowser();
             this.KryptonDockingManager = new Krypton.Docking.KryptonDockingManager();
             this.KryptonToolStrip = new Krypton.Toolkit.KryptonToolStrip();
-            this.ExportHtmlToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.PrintToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.ExportToolStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.MainKryptonPanel)).BeginInit();
             this.MainKryptonPanel.SuspendLayout();
             this.KryptonToolStrip.SuspendLayout();
@@ -62,23 +62,13 @@
             this.KryptonToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.KryptonToolStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.KryptonToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ExportHtmlToolStripButton,
+            this.ExportToolStripButton,
             this.PrintToolStripButton});
             this.KryptonToolStrip.Location = new System.Drawing.Point(0, 0);
             this.KryptonToolStrip.Name = "KryptonToolStrip";
             this.KryptonToolStrip.Size = new System.Drawing.Size(435, 31);
             this.KryptonToolStrip.TabIndex = 2;
             this.KryptonToolStrip.Text = "kryptonToolStrip1";
-            // 
-            // ExportHtmlToolStripButton
-            // 
-            this.ExportHtmlToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ExportHtmlToolStripButton.Image = global::XstReader.App.Properties.Resources.content_save;
-            this.ExportHtmlToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ExportHtmlToolStripButton.Name = "ExportHtmlToolStripButton";
-            this.ExportHtmlToolStripButton.Size = new System.Drawing.Size(28, 28);
-            this.ExportHtmlToolStripButton.Text = "Export as single Html";
-            this.ExportHtmlToolStripButton.ToolTipText = "Export as single Html";
             // 
             // PrintToolStripButton
             // 
@@ -88,6 +78,16 @@
             this.PrintToolStripButton.Name = "PrintToolStripButton";
             this.PrintToolStripButton.Size = new System.Drawing.Size(28, 28);
             this.PrintToolStripButton.Text = "Print...";
+            // 
+            // ExportToolStripButton
+            // 
+            this.ExportToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ExportToolStripButton.Image = global::XstReader.App.Properties.Resources.content_save;
+            this.ExportToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ExportToolStripButton.Name = "ExportToolStripButton";
+            this.ExportToolStripButton.Size = new System.Drawing.Size(28, 28);
+            this.ExportToolStripButton.Text = "Export message";
+            this.ExportToolStripButton.ToolTipText = "Export as single Html";
             // 
             // XstMessageContentViewControl
             // 
@@ -112,7 +112,7 @@
         private Krypton.Docking.KryptonDockingManager KryptonDockingManager;
         private Krypton.Toolkit.KryptonToolStrip KryptonToolStrip;
         private Krypton.Toolkit.KryptonWebBrowser KryptonWebBrowser;
-        private ToolStripButton ExportHtmlToolStripButton;
         private ToolStripButton PrintToolStripButton;
+        private ToolStripButton ExportToolStripButton;
     }
 }

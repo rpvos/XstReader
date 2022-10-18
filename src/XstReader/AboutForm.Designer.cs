@@ -36,6 +36,8 @@
             // 
             // AboutDescWebView
             // 
+            this.AboutDescWebView.AllowNavigation = false;
+            this.AboutDescWebView.AllowWebBrowserDrop = false;
             this.AboutDescWebView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AboutDescWebView.Location = new System.Drawing.Point(0, 0);
             this.AboutDescWebView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);

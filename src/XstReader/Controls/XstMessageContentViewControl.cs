@@ -39,8 +39,8 @@ namespace XstReader.App.Controls
             AttachmentListControl.GotFocus += (s, e) => RaiseSelectedItemChanged();
             AttachmentListControl.DoubleClickItem += (s, e) => RaiseDoubleClickItem(e.Element);
 
-            ExportHtmlToolStripButton.Enabled = false;
-            ExportHtmlToolStripButton.Click += (s, e) => Helpers.ExportHelper.ExportMessageToHtmlFile(_DataSource, true);
+            ExportToolStripButton.Enabled = false;
+            ExportToolStripButton.Click += (s, e) => Helpers.ExportHelper.ExportMessages(_DataSource);
             PrintToolStripButton.Enabled = false;
             PrintToolStripButton.Click += (s, e) => Print();
         }
@@ -74,14 +74,14 @@ namespace XstReader.App.Controls
             CleanTempFile();
             _DataSource = dataSource;
 
-            ExportHtmlToolStripButton.Enabled = _DataSource != null;
+            ExportToolStripButton.Enabled = _DataSource != null;
             PrintToolStripButton.Enabled = _DataSource != null;
 
             RecipientListControl.SetDataSource(dataSource?.Recipients.Items);
             AttachmentListControl.SetDataSource(dataSource?.Attachments);
 
             //var htmlText = _DataSource?.GetHtmlVisualization() ?? "";
-            var htmlText = _DataSource.RenderAsHtml(true);
+            var htmlText = _DataSource.RenderAsHtml();
             try
             {
                 if (htmlText.Length < 1500000)

@@ -14,7 +14,7 @@ namespace XstReader.App.Common.Analyzer
 {
     internal class XstFileAnalyzer
     {
-        public event ProgressChangedEventHandler ProgressChanged;
+        public event ProgressChangedEventHandler? ProgressChanged;
         private void RaiseProgressChanged(long current, long max)
         {
             if (max < current) max = current;
@@ -24,7 +24,7 @@ namespace XstReader.App.Common.Analyzer
             ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(percentage, null));
         }
 
-        public XstFile XstFile { get; private set; }
+        public XstFile? XstFile { get; private set; }
 
         public XstFileAnalyzer()
         {

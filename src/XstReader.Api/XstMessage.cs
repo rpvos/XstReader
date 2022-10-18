@@ -220,7 +220,7 @@ namespace XstReader
         /// <summary>
         /// Indicates if the Message was been read
         /// </summary>
-        [DisplayName("Is Read")]
+        [DisplayName("It has been Read")]
         [Category("General")]
         [Description(@"Indicates if the Message was been read")]
         public virtual bool IsRead => Flags?.HasFlag(MessageFlags.mfRead) ?? true;

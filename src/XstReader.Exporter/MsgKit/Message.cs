@@ -60,7 +60,7 @@ namespace XstReader.Exporter.MsgKit
         /// </summary>
         internal MessageClass Class = MessageClass.Unknown;
 
-        private string _ClassAsString = null;
+        private string? _ClassAsString = null;
         /// <summary>
         ///     Returns <see cref="Class"/> as a string that is written into the MSG file
         /// </summary>

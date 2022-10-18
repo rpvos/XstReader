@@ -21,7 +21,7 @@ namespace XstReader.App
             Initialize();
         }
 
-        private Action Action { get; set; }
+        private Action? Action { get; set; }
 
         private void Initialize()
         {

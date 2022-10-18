@@ -13,7 +13,7 @@ namespace XstReader.Exporter.MsgKit.Helpers
         /// </summary>
         /// <param name="fileName">The long filename</param>
         /// <returns></returns>
-        public static string GetShortFileName(string fileName)
+        public static string? GetShortFileName(string fileName)
         {
             var name = Path.GetFileNameWithoutExtension(fileName);
             var extension = Path.GetExtension(fileName);

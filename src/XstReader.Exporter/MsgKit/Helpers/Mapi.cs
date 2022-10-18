@@ -35,7 +35,7 @@ namespace XstReader.Exporter.MsgKit.Helpers
     internal static class Mapi
     {
         #region Fields
-        private static byte[] _instanceKey;
+        private static byte[]? _instanceKey;
         #endregion
 
         #region GenerateSearchKey

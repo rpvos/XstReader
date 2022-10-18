@@ -79,7 +79,7 @@ namespace XstReader.Exporter.MsgKit.Helpers
 	    /// <param name="stream">The stream from which the line is to be read</param>
 	    /// <returns>A line read from the stream returned as a byte array or <see langword="null"/> if no bytes were readable from the stream</returns>
 	    /// <exception cref="ArgumentNullException">If <paramref name="stream"/> is <see langword="null"/></exception>
-	    public static byte[] ReadLineAsBytes(Stream stream)
+	    public static byte[]? ReadLineAsBytes(Stream stream)
 	    {
 	        if (stream == null)
 	            throw new ArgumentNullException(nameof(stream));
@@ -120,7 +120,7 @@ namespace XstReader.Exporter.MsgKit.Helpers
 	    /// <param name="stream">The stream to read from</param>
 	    /// <returns>A line read from the stream or <see langword="null"/> if nothing could be read from the stream</returns>
 	    /// <exception cref="ArgumentNullException">If <paramref name="stream"/> is <see langword="null"/></exception>
-	    public static string ReadLineAsAscii(Stream stream)
+	    public static string? ReadLineAsAscii(Stream stream)
 	    {
 	        var readFromStream = ReadLineAsBytes(stream);
 	        return readFromStream != null ? Encoding.ASCII.GetString(readFromStream) : null;

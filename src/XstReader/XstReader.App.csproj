@@ -17,7 +17,7 @@
     <FileVersion>2.0.0</FileVersion>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
     <PackageId>XstReader</PackageId>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
     <Authors>iluvadev</Authors>
     <Product>XstReader</Product>
     <StartupObject>XstReader.App.Program</StartupObject>

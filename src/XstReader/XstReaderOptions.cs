@@ -17,7 +17,7 @@ namespace XstReader.App
     public class XstReaderOptions
     {
         public XstReaderViewOptions ViewOptions { get; set; } = new XstReaderViewOptions();
-        public XstExportOptions ExportOptions { get; set; } = new XstExportOptions();
+        public ExportOptions ExportOptions { get; set; } = new ExportOptions();
 
         public static void SaveToFile(string fileName, XstReaderOptions options)
         {

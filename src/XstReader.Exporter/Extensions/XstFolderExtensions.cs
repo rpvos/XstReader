@@ -21,7 +21,7 @@ namespace XstReader.Exporter
             return name;
         }
 
-        public static string GetDirnameForExport(this XstFolder? folder, XstExportOptions options)
+        public static string GetDirnameForSaving(this XstFolder? folder, ExportOptions options)
             => folder?.GetNameWithPattern(options.FolderDirectoryPattern).ReplaceInvalidFileNameChars("_") ?? "folder";
 
     }

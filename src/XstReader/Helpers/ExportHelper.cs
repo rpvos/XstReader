@@ -17,8 +17,6 @@ namespace XstReader.App.Helpers
         private static SaveFileDialog SaveFileDialog = new();
         private static FolderBrowserDialog FolderBrowserDialog = new() { ShowNewFolderButton = true };
 
-        private static ExporterAttachments attachmentExporter = new();
-
         public static bool ConfigureExport()
             => ExportOptionsForm.IsFirstTime ? new ExportOptionsForm().ShowDialog() == DialogResult.OK : true;
 
@@ -44,148 +42,51 @@ namespace XstReader.App.Helpers
             return true;
         }
 
-        public static bool ExportAttachmentsToDirectory(XstFolder? folder, string path)
+        public static bool ExportMessages<T>(T? elem) where T : XstElement
         {
-            if (folder == null)
-                return false;
+            string path = "";
 
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            bool ret = true;
-            foreach (var message in folder.Messages.OrderBy(m => m.LastModificationTime))
+            if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
             {
-                if (!ExportAttachmentsToDirectory(message, path))
-                    ret = false;
+                var exporter = new XstExporter(XstReaderEnvironment.Options.ExportOptions);
+                Action? saveMessagesAct = null;
+                if (elem is XstFile file)
+                    saveMessagesAct = () => exporter.SaveMessages(file, path);
+                else if (elem is XstFolder folder)
+                    saveMessagesAct = () => exporter.SaveMessages(folder, path);
+                else if (elem is XstMessage message)
+                    saveMessagesAct = () => exporter.SaveMessage(message, path);
+
+                if (saveMessagesAct != null)
+                    DoInWait($"Exporting Messages from {elem.DisplayName}", saveMessagesAct);
             }
-
-            if (XstReaderEnvironment.Options.ExportOptions.IncludeSubfolders)
-            {
-                foreach (var subFolder in folder.Folders)
-                {
-                    var subfolderPathBase = Path.Combine(path, subFolder.GetDirnameForExport(XstReaderEnvironment.Options.ExportOptions));
-                    var subfolderPath = subfolderPathBase;
-                    int i = 1;
-                    while (Directory.Exists(subfolderPath))
-                        subfolderPath = $"{subfolderPathBase}({i++})";
-                    if (!ExportAttachmentsToDirectory(subFolder, subfolderPath))
-                        ret = false;
-                }
-            }
-            return ret;
-        }
-
-        public static bool ExportAttachmentsToDirectory(XstMessage? message, string path)
-        {
-            if (message == null)
-                return false;
-
-            var attachmentsToExport = attachmentExporter.GetAttachmentsToExport(message, XstReaderEnvironment.Options.ExportOptions);
-            if (!(attachmentsToExport?.Any() ?? false))
-                return false;
-
-            var subfolderPath = attachmentExporter.CreateDirForAttachments(message, path, XstReaderEnvironment.Options.ExportOptions);
-            bool ret = true;
-            foreach (var attachment in attachmentsToExport)
-            {
-                string fileName = attachmentExporter.ExportAttachmentToDirectory(attachment, subfolderPath);
-                if (string.IsNullOrEmpty(fileName))
-                    ret = false;
-            }
-
-            return ret;
-        }
-
-        public static bool ExportFolderToHtmlFiles(XstFolder? folder)
-        {
-            if (folder == null)
-                return false;
-
-            if (FolderBrowserDialog.ShowDialog() != DialogResult.OK)
-                return false;
-
-            return ExportFolderToHtmlFiles(folder, FolderBrowserDialog.SelectedPath);
-        }
-        public static bool ExportFolderToHtmlFiles(XstFolder? folder, string path)
-        {
-            if (folder == null)
-                return false;
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            bool ret = true;
-            foreach (var message in folder.Messages.OrderBy(m => m.Date ?? DateTime.MinValue))
-            {
-                string fileNameBase = Path.Combine(path, message.GetFilenameForExport(XstReaderEnvironment.Options.ExportOptions));
-                string fileName = fileNameBase + ".html";
-                int i = 1;
-                while (File.Exists(fileName))
-                    fileName = $"{fileNameBase}({i++}).html";
-                if (!ExportMessageToHtmlFile(message, fileName))
-                    ret = false;
-            }
-            if (XstReaderEnvironment.Options.ExportOptions.IncludeSubfolders)
-            {
-                foreach (var subFolder in folder.Folders)
-                {
-                    var subfolderPathBase = Path.Combine(path, subFolder.GetDirnameForExport(XstReaderEnvironment.Options.ExportOptions));
-                    var subfolderPath = subfolderPathBase;
-                    int i = 1;
-                    while (Directory.Exists(subfolderPath))
-                        subfolderPath = $"{subfolderPathBase}({i++})";
-                    if (!ExportFolderToHtmlFiles(subFolder, subfolderPath))
-                        ret = false;
-                }
-            }
-            return ret;
-        }
-
-        public static bool ExportMessageToHtmlFile(XstMessage? message, bool openFile)
-        {
-            string path = string.Empty;
-            if (message != null && ConfigureExport() && AskDirectoryPath(ref path))
-                return ExportMessageToHtmlFile(message, path, openFile);
-
             return false;
         }
 
-        public static bool ExportMessageToHtmlFile(XstMessage? message, string path, bool openFile)
+        public static bool ExportAttachments<T>(T? elem) where T : XstElement
         {
-            string fileNameBase = Path.Combine(path, message.GetFilenameForExport(XstReaderEnvironment.Options.ExportOptions));
-            string fileName = fileNameBase + ".html";
-            int i = 1;
-            while (File.Exists(fileName))
-                fileName = $"{fileNameBase}({i++}).html";
+            string path = "";
 
-            bool ret = ExportMessageToHtmlFile(message, fileName);
-            if (ret && openFile)
-                SystemHelper.OpenWith(SaveFileDialog.FileName);
-
-            return ret;
-        }
-
-        private static bool ExportMessageToHtmlFile(XstMessage? message, string fileName)
-        {
-            if (message == null)
-                return false;
-
-            try
+            if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
             {
-                File.WriteAllText(fileName, message.RenderAsHtml(false));
-                if (message.Date.HasValue)
-                    File.SetLastWriteTime(fileName, message.Date.Value);
-                if (XstReaderEnvironment.Options.ExportOptions.ExportAttachments)
-                {
-                    var path = Path.GetDirectoryName(fileName);
-                    if (!string.IsNullOrEmpty(path))
-                        ExportAttachmentsToDirectory(message, path);
-                }
+                var exporter = new XstExporter(XstReaderEnvironment.Options.ExportOptions);
+                Action? saveMessagesAct = null;
+                if (elem is XstFile file)
+                    saveMessagesAct = () => exporter.SaveAttachments(file, path);
+                else if (elem is XstFolder folder)
+                    saveMessagesAct = () => exporter.SaveAttachments(folder, path);
+                else if (elem is XstMessage message)
+                    saveMessagesAct = () => exporter.SaveAttachments(message, path);
 
-
+                if (saveMessagesAct != null)
+                    DoInWait($"Exporting Attachments from {elem.DisplayName}", saveMessagesAct);
             }
-            catch { return false; }
-            return true;
+            return false;
         }
+
+        private static void DoInWait(string description, Action action)
+            => WaitingForm.Execute(description, action);
+
+
     }
 }

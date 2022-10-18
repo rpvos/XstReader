@@ -24,14 +24,10 @@
 // THE SOFTWARE.
 //
 
+using OpenMcdf;
+using System.Text;
 using XstReader.Exporter.MsgKit.Enums;
 using XstReader.Exporter.MsgKit.Helpers;
-using OpenMcdf;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace XstReader.Exporter.MsgKit.Structures
 {
@@ -243,13 +239,15 @@ namespace XstReader.Exporter.MsgKit.Structures
         /// </param>
         /// <exception cref="ArgumentNullException">Raised when <paramref name="obj" /> is <c>null</c></exception>
         internal void AddProperty(PropertyTag mapiTag,
-            object obj,
+            object? obj,
             PropertyFlags flags = PropertyFlags.PROPATTR_READABLE | PropertyFlags.PROPATTR_WRITABLE)
         {
             if (obj == null)
                 return;
 
             var data = AsBytes(mapiTag.Type, obj);
+            if (data == null)
+                return;
 
             var existingProp = this.FirstOrDefault(p => p.Id == mapiTag.Id && p.Type == mapiTag.Type);
             if (existingProp != null)
@@ -298,7 +296,7 @@ namespace XstReader.Exporter.MsgKit.Structures
         /// <param name="type"><see cref="PropertyType"/></param>
         /// <param name="obj"></param>
         /// <returns></returns>
-        private byte[] MultiValue<T>(PropertyType type, object obj)
+        private byte[]? MultiValue<T>(PropertyType type, object obj)
         {
             var values = (T[])obj;
             if (!values.Any())
@@ -318,10 +316,13 @@ namespace XstReader.Exporter.MsgKit.Structures
                         foreach (var value in values)
                         {
                             var bytes = AsBytes(type, value);
-                            var lengthInBytes = BitConverter.GetBytes((uint)(bytes.Length + nullTerminator.Length));
-                            // ReSharper disable once AssignNullToNotNullAttribute
-                            Array.Copy(lengthInBytes, 0, result, currentIndex, lengthInBytes.Length);
-                            currentIndex += lengthInBytes.Length;
+                            if (bytes != null)
+                            {
+                                var lengthInBytes = BitConverter.GetBytes((uint)(bytes.Length + nullTerminator.Length));
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                Array.Copy(lengthInBytes, 0, result, currentIndex, lengthInBytes.Length);
+                                currentIndex += lengthInBytes.Length;
+                            }
                         }
 
                         return result;
@@ -334,7 +335,8 @@ namespace XstReader.Exporter.MsgKit.Structures
                         foreach (var value in values)
                         {
                             var bytes = AsBytes(type, value);
-                            binaryWriter.Write(bytes);
+                            if (bytes != null)
+                                binaryWriter.Write(bytes);
                         }
 
                         return memoryStream.ToArray();
@@ -357,13 +359,12 @@ namespace XstReader.Exporter.MsgKit.Structures
             {
                 var nullTerminator = NullTerminator(singleValueType);
 
-                Add(new Property(
-                    mapiTag.Id,
-                    mapiTag.Type,
-                    flags,
-                    AsBytes(singleValueType, val).Concat(nullTerminator).ToArray(),
-                    index));
-                index++;
+                var data = AsBytes(singleValueType, val)?.Concat(nullTerminator).ToArray();
+                if (data != null)
+                {
+                    Add(new Property(mapiTag.Id, mapiTag.Type, flags, data, index));
+                    index++;
+                }
             }
         }
         #endregion
@@ -375,10 +376,10 @@ namespace XstReader.Exporter.MsgKit.Structures
         /// <param name="type"><see cref="PropertyType"/></param>
         /// <param name="obj"></param>
         /// <returns></returns>
-        private byte[] AsBytes(PropertyType type, object obj)
+        private byte[]? AsBytes(PropertyType type, object? obj)
         {
             if (obj == null) return null;
-            var data = new byte[] { };
+            var data = Array.Empty<byte>();
 
             switch (type)
             {
