@@ -17,7 +17,7 @@ As his daughter [@seeemilyplay](https://github.com/seeemilyplay) said:
 An application to view Microsoft Outlook's .ost and .pst files:
 * Can open .ost and .pst files
 * With no dependency on any Microsoft Office component
-* You can inspect all the properties of Folders, Emails, Attachments and Recipients
+* You can inspect all the properties of Folders, Messages (emails, contacts, tasks, appointmets...), Attachments and Recipients
 * You can open attached emails, images, and some docs inside the application
 * You can export emails in a single html file, with all the attachments and all available information
 
