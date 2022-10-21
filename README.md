@@ -1,4 +1,4 @@
-To download the last version, go to releases section
+To download the last version, go to [releases section](https://github.com/iluvadev/XstReader/releases)
 
 This repository includes 3 projects ([XstReader](#xstreader), [XstExporter](#xstexporter) and [XstReader.Api](#xstreaderapi)) to read, view and export folders, messages, attachments, recipients and properties from Microsoft Outlook's .ost and .pst files (also those protected by unknown password). All these projects are written entirely in C#, with no dependency on any Microsoft Office components.
 
