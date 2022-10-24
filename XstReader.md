@@ -7,6 +7,7 @@ It presents as a classic mail viewer, with configurable layout:
 ![XstReader ScreenShot](https://raw.githubusercontent.com/iluvadev/XstReader/master/docs/img/XstReader-Screenshot01_2.png)
 
 XstReader goes beyond Outlook in that it will allow you to open .ost files, which are the caches created by Outlook to hold a local copy of a mailbox. Wanting to read an .ost file as the original motivation for this project: now it also as the ability to export the messages.
+
 You can export any message (email, Contact, Appointment, Task):
 * As a single html file, with all the attachments and all available information embedded in the file, to inspect all available information with a single file.
 * As .msg file, to import later in Outlook
