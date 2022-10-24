@@ -21,7 +21,11 @@ An application to view Microsoft Outlook's .ost and .pst files:
 * With no dependency on any Microsoft Office component
 * You can inspect all the properties of Folders, Messages (emails, contacts, tasks, appointmets...), Attachments and Recipients
 * You can open attached emails, images, and some docs inside the application
-* You can export emails in a single html file, with all the attachments and all available information
+* You can export emails:
+  * As a single html file, with all the attachments and all available information embedded in the file
+  * As Outlook .msg file
+  * With the Original format, only body, without headers
+
 
 More information in [XstReader.md](./XstReader.md)
 
