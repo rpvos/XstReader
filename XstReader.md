@@ -19,7 +19,7 @@ XstReader is based on Microsoft’s documentation of the Outlook file formats in
 To install a binary:
 1. Choose a release, then download the XstReader-[release].zip file attached to it.
 2. Extract the contents of the zip file to a programs folder.
-3. Run XstReader.exe, and create shortcuts to it as required.
+3. Run XstReader.App.exe, and create shortcuts to it as required.
 
 
 ## More information
