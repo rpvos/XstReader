@@ -9,6 +9,7 @@
 // Copyright (c) 2021, iluvadev, and released under Ms-PL License.
 
 using System.ComponentModel;
+using XstReader.Exporter;
 
 namespace XstReader.App
 {
@@ -20,27 +21,51 @@ namespace XstReader.App
             InitializeComponent();
             Initialize();
         }
+        public WaitingForm(string description) : this()
+        {
+            TitleLabel.Text = description;
+        }
 
         private Action? Action { get; set; }
+
+        //Action<ExportProgress>
 
         private void Initialize()
         {
             Cursor.Current = Cursors.WaitCursor;
+            DescriptionLabel.Text = "";
+
             BackgroundWorker.RunWorkerCompleted += (s, e) => { try { Close(); } catch { } };
             BackgroundWorker.DoWork += (s, e) => Action?.Invoke();
+            BackgroundWorker.ProgressChanged += (s, e) => BackgroundWorkerProgressChanged(e.UserState as ExportProgress);
         }
 
-        private void Start(string description, Action action)
+        private void BackgroundWorkerProgressChanged(ExportProgress? exportProgress)
+        {
+            if (exportProgress == null) 
+                return;
+
+            DescriptionLabel.Text = exportProgress.CurrentStepDescription;
+
+            ProgressBar.Style = ProgressBarStyle.Continuous;
+            ProgressBar.Maximum = exportProgress.Maximum;
+            ProgressBar.Value = exportProgress.Value;
+        }
+        public void Start(Action action)
+        {
+            Action = action;
+            BackgroundWorker.RunWorkerAsync();
+        }
+
+        public void Start(string description, Action action)
         {
             TitleLabel.Text = description;
-            Action = action;
+            Start(action);
         }
 
-        protected override void OnLoad(EventArgs e)
+        public void ReportExportProgress(ExportProgress exportProgress)
         {
-            base.OnLoad(e);
-
-            BackgroundWorker.RunWorkerAsync();
+            BackgroundWorker.ReportProgress(exportProgress.Percentage, exportProgress);
         }
 
         public static void Execute(string description, Action action)

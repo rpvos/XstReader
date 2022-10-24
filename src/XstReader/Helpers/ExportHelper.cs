@@ -8,19 +8,20 @@
 //
 // Copyright (c) 2021, iluvadev, and released under Ms-PL License.
 
+using System.Diagnostics;
 using XstReader.Exporter;
 
 namespace XstReader.App.Helpers
 {
     public static class ExportHelper
     {
-        private static SaveFileDialog SaveFileDialog = new();
-        private static FolderBrowserDialog FolderBrowserDialog = new() { ShowNewFolderButton = true };
+        private static readonly SaveFileDialog SaveFileDialog = new();
+        private static readonly FolderBrowserDialog FolderBrowserDialog = new() { ShowNewFolderButton = true };
 
-        public static bool ConfigureExport()
-            => ExportOptionsForm.IsFirstTime ? new ExportOptionsForm().ShowDialog() == DialogResult.OK : true;
+        private static bool ConfigureExport()
+            => !ExportOptionsForm.IsFirstTime || new ExportOptionsForm().ShowDialog() == DialogResult.OK;
 
-        public static bool AskDirectoryPath(ref string path)
+        private static bool AskDirectoryPath(ref string path)
         {
             if (!string.IsNullOrWhiteSpace(path))
                 FolderBrowserDialog.SelectedPath = path;
@@ -31,7 +32,7 @@ namespace XstReader.App.Helpers
             return true;
         }
 
-        public static bool AskFileName(ref string fileName)
+        private static bool AskFileName(ref string fileName)
         {
             if (!string.IsNullOrWhiteSpace(fileName))
                 SaveFileDialog.FileName = fileName;
@@ -46,19 +47,27 @@ namespace XstReader.App.Helpers
         {
             string path = "";
 
-            if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
+            if (elem != null && ConfigureExport() && AskDirectoryPath(ref path))
             {
-                var exporter = new XstExporter(XstReaderEnvironment.Options.ExportOptions);
-                Action? saveMessagesAct = null;
-                if (elem is XstFile file)
-                    saveMessagesAct = () => exporter.SaveMessages(file, path);
-                else if (elem is XstFolder folder)
-                    saveMessagesAct = () => exporter.SaveMessages(folder, path);
-                else if (elem is XstMessage message)
-                    saveMessagesAct = () => exporter.SaveMessage(message, path);
+                using (var frm = new WaitingForm($"Exporting Messages from {elem.DisplayName}"))
+                {
+                    var exporter = new XstExporter(XstReaderEnvironment.Options.ExportOptions, frm.ReportExportProgress);
+                    Action? saveMessagesAct = null;
+                    if (elem is XstFile file)
+                        saveMessagesAct = () => exporter.SaveMessages(file, path);
+                    else if (elem is XstFolder folder)
+                        saveMessagesAct = () => exporter.SaveMessages(folder, path);
+                    else if (elem is XstMessage message)
+                        saveMessagesAct = () => exporter.SaveMessage(message, path);
 
-                if (saveMessagesAct != null)
-                    DoInWait($"Exporting Messages from {elem.DisplayName}", saveMessagesAct);
+                    if (saveMessagesAct != null)
+                    {
+                        frm.Start(saveMessagesAct);
+                        frm.ShowDialog();
+                        try { Process.Start(new ProcessStartInfo() { FileName = path, UseShellExecute = true }); }
+                        catch { }
+                    }
+                }
             }
             return false;
         }
@@ -67,26 +76,29 @@ namespace XstReader.App.Helpers
         {
             string path = "";
 
-            if (elem != null && ExportHelper.ConfigureExport() && ExportHelper.AskDirectoryPath(ref path))
+            if (elem != null && ConfigureExport() && AskDirectoryPath(ref path))
             {
-                var exporter = new XstExporter(XstReaderEnvironment.Options.ExportOptions);
-                Action? saveMessagesAct = null;
-                if (elem is XstFile file)
-                    saveMessagesAct = () => exporter.SaveAttachments(file, path);
-                else if (elem is XstFolder folder)
-                    saveMessagesAct = () => exporter.SaveAttachments(folder, path);
-                else if (elem is XstMessage message)
-                    saveMessagesAct = () => exporter.SaveAttachments(message, path);
+                using (var frm = new WaitingForm($"Exporting Messages from {elem.DisplayName}"))
+                {
+                    var exporter = new XstExporter(XstReaderEnvironment.Options.ExportOptions, frm.ReportExportProgress);
+                    Action? saveMessagesAct = null;
+                    if (elem is XstFile file)
+                        saveMessagesAct = () => exporter.SaveAttachments(file, path);
+                    else if (elem is XstFolder folder)
+                        saveMessagesAct = () => exporter.SaveAttachments(folder, path);
+                    else if (elem is XstMessage message)
+                        saveMessagesAct = () => exporter.SaveAttachments(message, path);
 
-                if (saveMessagesAct != null)
-                    DoInWait($"Exporting Attachments from {elem.DisplayName}", saveMessagesAct);
+                    if (saveMessagesAct != null)
+                    {
+                        frm.Start(saveMessagesAct);
+                        frm.ShowDialog();
+                        try { Process.Start(new ProcessStartInfo() { FileName = path, UseShellExecute = true }); }
+                        catch { }
+                    }
+                }
             }
             return false;
         }
-
-        private static void DoInWait(string description, Action action)
-            => WaitingForm.Execute(description, action);
-
-
     }
 }

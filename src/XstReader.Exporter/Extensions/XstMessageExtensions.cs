@@ -24,5 +24,17 @@ namespace XstReader.Exporter
         public static string GetFilenameForSaving(this XstMessage? message, ExportOptions options)
             => message?.GetNameWithPattern(options.MessageFilePattern).ReplaceInvalidFileNameChars("_") ?? "message";
 
+        public static string GetFilenameForSavingOriginal(this XstMessage? message, ExportOptions options)
+        {
+            var fileName = GetFilenameForSaving(message, options);
+            switch (message?.Body?.Format)
+            {
+                case XstMessageBodyFormat.Html: return fileName + ".html";
+                case XstMessageBodyFormat.PlainText: return fileName + ".txt";
+                case XstMessageBodyFormat.Rtf: return fileName + ".rtf";
+            }
+            return fileName;
+        }
+
     }
 }

@@ -17,6 +17,7 @@ namespace XstReader.App
                 MessagePatternTextBox.Text = value.MessageFilePattern;
                 MessageExportHtmlCheckBox.Checked = value.ExportMessagesAsSingleHtml;
                 MessageExportMsgCheckBox.Checked = value.ExportMessagesAsMsg;
+                MessageExportOriginalCheckBox.Checked = value.ExportMessagesAsOriginal;
 
                 MessageDetailsCheckBox.Checked = value.SingleHtmlOptions.ShowDetails;
                 MessageDescPropertiesCheckBox.Checked = value.SingleHtmlOptions.ShowPropertiesDescriptions;
@@ -53,6 +54,7 @@ namespace XstReader.App
 
             Options.ExportMessagesAsSingleHtml = MessageExportHtmlCheckBox.Checked;
             Options.ExportMessagesAsMsg = MessageExportMsgCheckBox.Checked;
+            Options.ExportMessagesAsOriginal = MessageExportOriginalCheckBox.Checked;
 
             Options.SingleHtmlOptions.ShowDetails = MessageDetailsCheckBox.Checked;
             Options.SingleHtmlOptions.ShowPropertiesDescriptions = MessageDescPropertiesCheckBox.Checked;

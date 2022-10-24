@@ -32,8 +32,8 @@
             this.KryptonWebBrowser = new Krypton.Toolkit.KryptonWebBrowser();
             this.KryptonDockingManager = new Krypton.Docking.KryptonDockingManager();
             this.KryptonToolStrip = new Krypton.Toolkit.KryptonToolStrip();
-            this.PrintToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ExportToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.PrintToolStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.MainKryptonPanel)).BeginInit();
             this.MainKryptonPanel.SuspendLayout();
             this.KryptonToolStrip.SuspendLayout();
@@ -70,15 +70,6 @@
             this.KryptonToolStrip.TabIndex = 2;
             this.KryptonToolStrip.Text = "kryptonToolStrip1";
             // 
-            // PrintToolStripButton
-            // 
-            this.PrintToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.PrintToolStripButton.Image = global::XstReader.App.Properties.Resources.printer;
-            this.PrintToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.PrintToolStripButton.Name = "PrintToolStripButton";
-            this.PrintToolStripButton.Size = new System.Drawing.Size(28, 28);
-            this.PrintToolStripButton.Text = "Print...";
-            // 
             // ExportToolStripButton
             // 
             this.ExportToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -87,7 +78,16 @@
             this.ExportToolStripButton.Name = "ExportToolStripButton";
             this.ExportToolStripButton.Size = new System.Drawing.Size(28, 28);
             this.ExportToolStripButton.Text = "Export message";
-            this.ExportToolStripButton.ToolTipText = "Export as single Html";
+            this.ExportToolStripButton.ToolTipText = "Export Message";
+            // 
+            // PrintToolStripButton
+            // 
+            this.PrintToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.PrintToolStripButton.Image = global::XstReader.App.Properties.Resources.printer;
+            this.PrintToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.PrintToolStripButton.Name = "PrintToolStripButton";
+            this.PrintToolStripButton.Size = new System.Drawing.Size(28, 28);
+            this.PrintToolStripButton.Text = "Print...";
             // 
             // XstMessageContentViewControl
             // 

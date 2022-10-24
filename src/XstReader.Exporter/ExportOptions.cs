@@ -21,6 +21,7 @@ namespace XstReader.Exporter
 
         public bool ExportMessagesAsSingleHtml { get; set; } = true;
         public bool ExportMessagesAsMsg { get; set; } = false;
+        public bool ExportMessagesAsOriginal { get; set; } = false;
 
         public bool ExportAttachmentsWithMessage { get; set; } = false;
 
@@ -37,6 +38,7 @@ namespace XstReader.Exporter
                 ExportMessagesAsSingleHtml = ExportMessagesAsSingleHtml,
                 ExportMessagesAsMsg = ExportMessagesAsMsg,
                 ExportAttachmentsWithMessage = ExportAttachmentsWithMessage,
+                ExportMessagesAsOriginal = ExportMessagesAsOriginal,
                 ExportHiddenAttachments = ExportHiddenAttachments,
             };
     }

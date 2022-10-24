@@ -38,6 +38,7 @@
             this.AttributeKryptonLabel = new Krypton.Toolkit.KryptonLabel();
             this.MessagePanel = new Krypton.Toolkit.KryptonPanel();
             this.MessageExportAttCheckBox = new Krypton.Toolkit.KryptonCheckBox();
+            this.MessageExportOriginalCheckBox = new Krypton.Toolkit.KryptonCheckBox();
             this.MessageExportHtmlCheckBox = new Krypton.Toolkit.KryptonCheckBox();
             this.MessageExportMsgCheckBox = new Krypton.Toolkit.KryptonCheckBox();
             this.MessagePatternTextBox = new Krypton.Toolkit.KryptonTextBox();
@@ -79,7 +80,7 @@
             this.BottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomPanel.Location = new System.Drawing.Point(0, 396);
             this.BottomPanel.Name = "BottomPanel";
-            this.BottomPanel.Size = new System.Drawing.Size(675, 43);
+            this.BottomPanel.Size = new System.Drawing.Size(594, 43);
             this.BottomPanel.TabIndex = 5;
             // 
             // UserCancelButton
@@ -95,7 +96,7 @@
             // UserOkButton
             // 
             this.UserOkButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.UserOkButton.Location = new System.Drawing.Point(588, 9);
+            this.UserOkButton.Location = new System.Drawing.Point(507, 9);
             this.UserOkButton.Name = "UserOkButton";
             this.UserOkButton.Size = new System.Drawing.Size(87, 31);
             this.UserOkButton.TabIndex = 0;
@@ -112,7 +113,7 @@
             this.MainPanel.Name = "MainPanel";
             this.MainPanel.Padding = new System.Windows.Forms.Padding(5);
             this.MainPanel.PanelBackStyle = Krypton.Toolkit.PaletteBackStyle.ControlClient;
-            this.MainPanel.Size = new System.Drawing.Size(391, 396);
+            this.MainPanel.Size = new System.Drawing.Size(310, 396);
             this.MainPanel.TabIndex = 6;
             // 
             // AttributePanel
@@ -124,7 +125,7 @@
             this.AttributePanel.Name = "AttributePanel";
             this.AttributePanel.Padding = new System.Windows.Forms.Padding(10);
             this.AttributePanel.PanelBackStyle = Krypton.Toolkit.PaletteBackStyle.TabOneNote;
-            this.AttributePanel.Size = new System.Drawing.Size(381, 72);
+            this.AttributePanel.Size = new System.Drawing.Size(300, 72);
             this.AttributePanel.TabIndex = 2;
             // 
             // AttributeExportHiddenCheckBox
@@ -133,7 +134,7 @@
             this.AttributeExportHiddenCheckBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.AttributeExportHiddenCheckBox.Location = new System.Drawing.Point(10, 43);
             this.AttributeExportHiddenCheckBox.Name = "AttributeExportHiddenCheckBox";
-            this.AttributeExportHiddenCheckBox.Size = new System.Drawing.Size(361, 25);
+            this.AttributeExportHiddenCheckBox.Size = new System.Drawing.Size(280, 25);
             this.AttributeExportHiddenCheckBox.TabIndex = 0;
             this.AttributeExportHiddenCheckBox.Values.Text = "Export Hidden Attachments";
             // 
@@ -144,13 +145,14 @@
             this.AttributeKryptonLabel.LabelStyle = Krypton.Toolkit.LabelStyle.TitleControl;
             this.AttributeKryptonLabel.Location = new System.Drawing.Point(10, 10);
             this.AttributeKryptonLabel.Name = "AttributeKryptonLabel";
-            this.AttributeKryptonLabel.Size = new System.Drawing.Size(361, 33);
+            this.AttributeKryptonLabel.Size = new System.Drawing.Size(280, 33);
             this.AttributeKryptonLabel.TabIndex = 3;
             this.AttributeKryptonLabel.Values.Text = "Export Attributes:";
             // 
             // MessagePanel
             // 
             this.MessagePanel.Controls.Add(this.MessageExportAttCheckBox);
+            this.MessagePanel.Controls.Add(this.MessageExportOriginalCheckBox);
             this.MessagePanel.Controls.Add(this.MessageExportHtmlCheckBox);
             this.MessagePanel.Controls.Add(this.MessageExportMsgCheckBox);
             this.MessagePanel.Controls.Add(this.MessagePatternTextBox);
@@ -161,18 +163,28 @@
             this.MessagePanel.Name = "MessagePanel";
             this.MessagePanel.Padding = new System.Windows.Forms.Padding(10);
             this.MessagePanel.PanelBackStyle = Krypton.Toolkit.PaletteBackStyle.TabOneNote;
-            this.MessagePanel.Size = new System.Drawing.Size(381, 188);
+            this.MessagePanel.Size = new System.Drawing.Size(300, 188);
             this.MessagePanel.TabIndex = 1;
             // 
             // MessageExportAttCheckBox
             // 
             this.MessageExportAttCheckBox.AutoSize = false;
             this.MessageExportAttCheckBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.MessageExportAttCheckBox.Location = new System.Drawing.Point(10, 136);
+            this.MessageExportAttCheckBox.Location = new System.Drawing.Point(10, 161);
             this.MessageExportAttCheckBox.Name = "MessageExportAttCheckBox";
-            this.MessageExportAttCheckBox.Size = new System.Drawing.Size(361, 25);
+            this.MessageExportAttCheckBox.Size = new System.Drawing.Size(280, 25);
             this.MessageExportAttCheckBox.TabIndex = 7;
             this.MessageExportAttCheckBox.Values.Text = "Export Attachments as files";
+            // 
+            // MessageExportOriginalCheckBox
+            // 
+            this.MessageExportOriginalCheckBox.AutoSize = false;
+            this.MessageExportOriginalCheckBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.MessageExportOriginalCheckBox.Location = new System.Drawing.Point(10, 136);
+            this.MessageExportOriginalCheckBox.Name = "MessageExportOriginalCheckBox";
+            this.MessageExportOriginalCheckBox.Size = new System.Drawing.Size(280, 25);
+            this.MessageExportOriginalCheckBox.TabIndex = 10;
+            this.MessageExportOriginalCheckBox.Values.Text = "Export in Original format without headers";
             // 
             // MessageExportHtmlCheckBox
             // 
@@ -180,7 +192,7 @@
             this.MessageExportHtmlCheckBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.MessageExportHtmlCheckBox.Location = new System.Drawing.Point(10, 111);
             this.MessageExportHtmlCheckBox.Name = "MessageExportHtmlCheckBox";
-            this.MessageExportHtmlCheckBox.Size = new System.Drawing.Size(361, 25);
+            this.MessageExportHtmlCheckBox.Size = new System.Drawing.Size(280, 25);
             this.MessageExportHtmlCheckBox.TabIndex = 8;
             this.MessageExportHtmlCheckBox.Values.Text = "Export as Single .HTML flie";
             // 
@@ -190,7 +202,7 @@
             this.MessageExportMsgCheckBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.MessageExportMsgCheckBox.Location = new System.Drawing.Point(10, 86);
             this.MessageExportMsgCheckBox.Name = "MessageExportMsgCheckBox";
-            this.MessageExportMsgCheckBox.Size = new System.Drawing.Size(361, 25);
+            this.MessageExportMsgCheckBox.Size = new System.Drawing.Size(280, 25);
             this.MessageExportMsgCheckBox.TabIndex = 9;
             this.MessageExportMsgCheckBox.Values.Text = "Export as Outlook .MSG file";
             // 
@@ -199,7 +211,7 @@
             this.MessagePatternTextBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.MessagePatternTextBox.Location = new System.Drawing.Point(10, 63);
             this.MessagePatternTextBox.Name = "MessagePatternTextBox";
-            this.MessagePatternTextBox.Size = new System.Drawing.Size(361, 23);
+            this.MessagePatternTextBox.Size = new System.Drawing.Size(280, 23);
             this.MessagePatternTextBox.TabIndex = 5;
             this.MessagePatternTextBox.Text = "$yyyy$MM$dd$HH$mm$ss-$subject";
             // 
@@ -209,7 +221,7 @@
             this.kryptonLabel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.kryptonLabel3.Location = new System.Drawing.Point(10, 43);
             this.kryptonLabel3.Name = "kryptonLabel3";
-            this.kryptonLabel3.Size = new System.Drawing.Size(361, 20);
+            this.kryptonLabel3.Size = new System.Drawing.Size(280, 20);
             this.kryptonLabel3.TabIndex = 6;
             this.kryptonLabel3.Values.Text = "File name pattern for Messages:";
             // 
@@ -220,7 +232,7 @@
             this.MessageKryptonLabel.LabelStyle = Krypton.Toolkit.LabelStyle.TitleControl;
             this.MessageKryptonLabel.Location = new System.Drawing.Point(10, 10);
             this.MessageKryptonLabel.Name = "MessageKryptonLabel";
-            this.MessageKryptonLabel.Size = new System.Drawing.Size(361, 33);
+            this.MessageKryptonLabel.Size = new System.Drawing.Size(280, 33);
             this.MessageKryptonLabel.TabIndex = 2;
             this.MessageKryptonLabel.Values.Text = "Messages:";
             // 
@@ -235,7 +247,7 @@
             this.FolderPanel.Name = "FolderPanel";
             this.FolderPanel.Padding = new System.Windows.Forms.Padding(10);
             this.FolderPanel.PanelBackStyle = Krypton.Toolkit.PaletteBackStyle.TabOneNote;
-            this.FolderPanel.Size = new System.Drawing.Size(381, 126);
+            this.FolderPanel.Size = new System.Drawing.Size(300, 126);
             this.FolderPanel.TabIndex = 0;
             // 
             // FolderSubfoldersCheckBox
@@ -244,7 +256,7 @@
             this.FolderSubfoldersCheckBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.FolderSubfoldersCheckBox.Location = new System.Drawing.Point(10, 86);
             this.FolderSubfoldersCheckBox.Name = "FolderSubfoldersCheckBox";
-            this.FolderSubfoldersCheckBox.Size = new System.Drawing.Size(361, 35);
+            this.FolderSubfoldersCheckBox.Size = new System.Drawing.Size(280, 35);
             this.FolderSubfoldersCheckBox.TabIndex = 1;
             this.FolderSubfoldersCheckBox.Values.Text = "Export all subfolders";
             // 
@@ -253,7 +265,7 @@
             this.FolderPatternTextBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.FolderPatternTextBox.Location = new System.Drawing.Point(10, 63);
             this.FolderPatternTextBox.Name = "FolderPatternTextBox";
-            this.FolderPatternTextBox.Size = new System.Drawing.Size(361, 23);
+            this.FolderPatternTextBox.Size = new System.Drawing.Size(280, 23);
             this.FolderPatternTextBox.TabIndex = 0;
             this.FolderPatternTextBox.Text = "_$yyyy$MM$dd$HH$mm$ss-$folder";
             // 
@@ -263,7 +275,7 @@
             this.kryptonLabel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.kryptonLabel1.Location = new System.Drawing.Point(10, 43);
             this.kryptonLabel1.Name = "kryptonLabel1";
-            this.kryptonLabel1.Size = new System.Drawing.Size(361, 20);
+            this.kryptonLabel1.Size = new System.Drawing.Size(280, 20);
             this.kryptonLabel1.TabIndex = 0;
             this.kryptonLabel1.Values.Text = "Directory name pattern for Folders:";
             // 
@@ -274,7 +286,7 @@
             this.FoldersKryptonLabel.LabelStyle = Krypton.Toolkit.LabelStyle.TitleControl;
             this.FoldersKryptonLabel.Location = new System.Drawing.Point(10, 10);
             this.FoldersKryptonLabel.Name = "FoldersKryptonLabel";
-            this.FoldersKryptonLabel.Size = new System.Drawing.Size(361, 33);
+            this.FoldersKryptonLabel.Size = new System.Drawing.Size(280, 33);
             this.FoldersKryptonLabel.TabIndex = 1;
             this.FoldersKryptonLabel.Values.Text = "Export Folders:";
             // 
@@ -284,7 +296,7 @@
             this.HelpPanel.Controls.Add(this.kryptonLabel4);
             this.HelpPanel.Controls.Add(this.FormatLabel);
             this.HelpPanel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.HelpPanel.Location = new System.Drawing.Point(391, 0);
+            this.HelpPanel.Location = new System.Drawing.Point(310, 0);
             this.HelpPanel.Name = "HelpPanel";
             this.HelpPanel.PanelBackStyle = Krypton.Toolkit.PaletteBackStyle.ControlClient;
             this.HelpPanel.Size = new System.Drawing.Size(284, 396);
@@ -373,7 +385,7 @@
             this.AcceptButton = this.UserOkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(675, 439);
+            this.ClientSize = new System.Drawing.Size(594, 439);
             this.Controls.Add(this.MainPanel);
             this.Controls.Add(this.HelpPanel);
             this.Controls.Add(this.BottomPanel);
@@ -431,5 +443,6 @@
         private Krypton.Toolkit.KryptonCheckBox MessageDescPropertiesCheckBox;
         private Krypton.Toolkit.KryptonCheckBox MessageDetailsCheckBox;
         private Krypton.Toolkit.KryptonLabel kryptonLabel5;
+        private Krypton.Toolkit.KryptonCheckBox MessageExportOriginalCheckBox;
     }
 }

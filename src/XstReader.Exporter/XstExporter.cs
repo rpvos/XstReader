@@ -15,6 +15,9 @@ namespace XstReader.Exporter
                 _MessageToSingleHtml = null;
             }
         }
+
+        public ExportProgress ExportProgress { get; private init; }
+
         private MessageToSingleHtml? _MessageToSingleHtml = null;
         private MessageToSingleHtml MessageToSingleHtml => _MessageToSingleHtml ??= new(ExportOptions.SingleHtmlOptions);
 
@@ -22,6 +25,12 @@ namespace XstReader.Exporter
         public XstExporter(ExportOptions exportOptions)
         {
             ExportOptions = exportOptions;
+            ExportProgress = new();
+        }
+        public XstExporter(ExportOptions exportOptions, Action<ExportProgress> reportProgressAction)
+        {
+            ExportOptions = exportOptions;
+            ExportProgress = new(reportProgressAction);
         }
         #endregion Ctor
 
@@ -51,195 +60,268 @@ namespace XstReader.Exporter
         }
 
         #region Attachments
-        private string SaveAttachmentToDirectory(XstAttachment? attachment, string path)
+        private IEnumerable<string> SaveAttachmentToDirectory(XstAttachment? attachment, string path)
         {
             if (attachment == null)
-                return "";
+                return Enumerable.Empty<string>();
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
+            if (attachment.IsEmail)
+                return SaveMessage(attachment.AttachedEmailMessage, path);
+
             string fileName = IOHelper.GetFileNameWithoutCollisions(Path.Combine(path, attachment.FileNameForSaving));
             return SaveAttachmentToFile(attachment, fileName);
         }
-        public string SaveAttachmentToFile(XstAttachment? attachment, string fileName)
+        public IEnumerable<string> SaveAttachmentToFile(XstAttachment attachment, string fileName)
         {
-            if (attachment == null)
-                return "";
+            try
+            {
+                try { attachment.SaveToFile(fileName); }
+                catch { return Enumerable.Empty<string>(); }
 
-            // IEPA!! I si es un emai?
-            try { attachment.SaveToFile(fileName); }
-            catch { return ""; }
-
-            return fileName;
+                return new List<string> { fileName };
+            }
+            finally { ExportProgress.Step($"Processed Attachment {attachment}"); }
         }
         private IEnumerable<string> SaveAttachmentsToDirectory(IEnumerable<XstAttachment> attachments, string path)
         {
             var fileNames = new List<string>();
             foreach (var attachment in attachments.OrderBy(a => a.LastModificationTime))
-                fileNames.AddIfNotNullOrEmpty(SaveAttachmentToDirectory(attachment, path));
+                fileNames.AddRangeIfNotNullOrEmpty(SaveAttachmentToDirectory(attachment, path));
 
             return fileNames;
         }
         public IEnumerable<string> SaveAttachments(XstMessage? message, string path)
         {
-            if (message == null)
-                return Enumerable.Empty<string>();
+            try
+            {
+                if (message == null)
+                    return Enumerable.Empty<string>();
 
-            var attachmentsToExport = message.Attachments.Where(a => a.IsFile && (!a.IsHidden || ExportOptions.ExportHiddenAttachments));
-            if (!(attachmentsToExport?.Any() ?? false))
-                return Enumerable.Empty<string>();
+                var attachmentsToExport = message.Attachments.Where(a => a.IsFile && (!a.IsHidden || ExportOptions.ExportHiddenAttachments));
+                if (!(attachmentsToExport?.Any() ?? false))
+                    return Enumerable.Empty<string>();
 
-            var subfolderPath = CreateDirForMessage(message, path);
-            var fileNames = SaveAttachmentsToDirectory(attachmentsToExport, subfolderPath);
-            if (!fileNames.Any())
-                try { Directory.Delete(subfolderPath); }
-                catch { }
+                ExportProgress.IncrementMaximum(attachmentsToExport.Count());
 
-            return fileNames;
+                var subfolderPath = CreateDirForMessage(message, path);
+                var fileNames = SaveAttachmentsToDirectory(attachmentsToExport, subfolderPath);
+                if (!fileNames.Any())
+                    try { Directory.Delete(subfolderPath); }
+                    catch { }
+
+                return fileNames;
+            }
+            finally { ExportProgress.Step($"Processed Attachments of Message {message}"); }
         }
         public IEnumerable<string> SaveAttachments(XstFolder? folder, string path)
         {
-            if (folder == null)
-                return Enumerable.Empty<string>();
-
-            var fileNames = new List<string>();
-
-            foreach (var message in folder.Messages.OrderBy(m => m.LastModificationTime))
-                fileNames.AddRangeIfNotNullOrEmpty(SaveAttachments(message, path));
-
-            if (ExportOptions.IncludeSubfolders)
+            try
             {
-                foreach (var subFolder in folder.Folders.OrderBy(f => f.LastModificationTime))
+                if (folder == null)
+                    return Enumerable.Empty<string>();
+
+                var fileNames = new List<string>();
+
+                ExportProgress.IncrementMaximum(folder.Messages.Count());
+                ExportProgress.IncrementMaximum(ExportOptions.IncludeSubfolders, folder.Folders.Count());
+
+                foreach (var message in folder.Messages.OrderBy(m => m.LastModificationTime))
+                    fileNames.AddRangeIfNotNullOrEmpty(SaveAttachments(message, path));
+
+                if (ExportOptions.IncludeSubfolders)
                 {
-                    var subfolderPath = CreateDirForFolder(subFolder, path);
-                    var exportedAttachments = SaveAttachments(subFolder, subfolderPath);
-                    if (!exportedAttachments.Any())
-                        try { Directory.Delete(subfolderPath); }
-                        catch { }
-                    fileNames.AddRangeIfNotNullOrEmpty(exportedAttachments);
+                    foreach (var subFolder in folder.Folders.OrderBy(f => f.LastModificationTime))
+                    {
+                        var subfolderPath = CreateDirForFolder(subFolder, path);
+                        var exportedAttachments = SaveAttachments(subFolder, subfolderPath);
+                        if (!exportedAttachments.Any())
+                            try { Directory.Delete(subfolderPath); }
+                            catch { }
+                        fileNames.AddRangeIfNotNullOrEmpty(exportedAttachments);
+                    }
                 }
+                return fileNames;
             }
-            return fileNames;
+            finally { ExportProgress.Step($"Processed Attachments of Folder {folder}"); }
         }
         public IEnumerable<string> SaveAttachments(XstFile? xstFile, string path)
         {
-            if (xstFile == null)
-                return Enumerable.Empty<string>();
+            try
+            {
+                if (xstFile == null)
+                    return Enumerable.Empty<string>();
 
-            var fileNames = new List<string>();
+                ExportProgress.IncrementMaximum();
 
-            string rootFolderPath = CreateDirForFolder(xstFile.RootFolder, path);
-            fileNames.AddRangeIfNotNullOrEmpty(SaveAttachments(xstFile.RootFolder, rootFolderPath));
+                var fileNames = new List<string>();
 
-            if (!fileNames.Any())
-                try { Directory.Delete(rootFolderPath); }
-                catch { }
+                string rootFolderPath = CreateDirForFolder(xstFile.RootFolder, path);
+                fileNames.AddRangeIfNotNullOrEmpty(SaveAttachments(xstFile.RootFolder, rootFolderPath));
 
-            return fileNames;
+                if (!fileNames.Any())
+                    try { Directory.Delete(rootFolderPath); }
+                    catch { }
+
+                return fileNames;
+            }
+            finally { ExportProgress.Step($"Processed Attachments of File {xstFile}"); }
         }
         #endregion Attachments
 
         #region Messages
-        public string SaveMessageMsgToFile(XstMessage? message, string fileName)
+        public string SaveMessageOriginalToFile(XstMessage? message, string fileName)
         {
-            if (message == null)
-                return "";
-
-            (new MessageXst(message)).Save(fileName);
-            if (!File.Exists(fileName))
-                return "";
-
-            if (message.Date.HasValue)
-                File.SetLastWriteTime(fileName, message.Date.Value);
-            return fileName;
-        }
-
-        public string SaveMessageSingleHtmlToFile(XstMessage? message, string fileName)
-        {
-            if (message == null)
-                return "";
-
             try
             {
-                File.WriteAllText(fileName, MessageToSingleHtml.Render(message));
+                if (message?.Body == null)
+                    return "";
+
+                File.WriteAllText(fileName, message.Body.Text);
                 if (!File.Exists(fileName))
                     return "";
 
                 if (message.Date.HasValue)
                     File.SetLastWriteTime(fileName, message.Date.Value);
+                return fileName;
             }
-            catch { return ""; }
-
-            return fileName;
+            finally { ExportProgress.Step($"Processed Message {message} as original format"); }
         }
 
+        public string SaveMessageMsgToFile(XstMessage? message, string fileName)
+        {
+            try
+            {
+                if (message == null)
+                    return "";
 
+                (new MessageXst(message)).Save(fileName);
+                if (!File.Exists(fileName))
+                    return "";
+
+                if (message.Date.HasValue)
+                    File.SetLastWriteTime(fileName, message.Date.Value);
+                return fileName;
+            }
+            finally { ExportProgress.Step($"Processed Message {message} as MSG"); }
+        }
+
+        public string SaveMessageSingleHtmlToFile(XstMessage? message, string fileName)
+        {
+            try
+            {
+                if (message == null)
+                    return "";
+
+                try
+                {
+                    File.WriteAllText(fileName, MessageToSingleHtml.Render(message));
+                    if (!File.Exists(fileName))
+                        return "";
+
+                    if (message.Date.HasValue)
+                        File.SetLastWriteTime(fileName, message.Date.Value);
+                }
+                catch { return ""; }
+
+                return fileName;
+            }
+            finally { ExportProgress.Step($"Processed Message {message} as Single HTML"); }
+        }
 
         public IEnumerable<string> SaveMessage(XstMessage? message, string path)
         {
-            if (message == null)
-                return Enumerable.Empty<string>();
-
-            var fileNames = new List<string>();
-
-            if (ExportOptions.ExportMessagesAsMsg)
+            try
             {
-                string fileName = IOHelper.GetFileNameWithoutCollisions(Path.Combine(path, message.GetFilenameForSaving(ExportOptions) + ".msg"));
-                fileNames.AddIfNotNullOrEmpty(SaveMessageMsgToFile(message, fileName));
-            }
-            if (ExportOptions.ExportMessagesAsSingleHtml)
-            {
-                string fileName = IOHelper.GetFileNameWithoutCollisions(Path.Combine(path, message.GetFilenameForSaving(ExportOptions) + ".html"));
-                fileNames.AddIfNotNullOrEmpty(SaveMessageSingleHtmlToFile(message, fileName));
-            }
-            if (ExportOptions.ExportAttachmentsWithMessage)
-            {
-                fileNames.AddRangeIfNotNullOrEmpty(SaveAttachments(message, path));
-            }
+                if (message == null)
+                    return Enumerable.Empty<string>();
 
-            return fileNames;
+                var fileNames = new List<string>();
+
+                ExportProgress.IncrementMaximum(ExportOptions.ExportMessagesAsOriginal);
+                ExportProgress.IncrementMaximum(ExportOptions.ExportMessagesAsMsg);
+                ExportProgress.IncrementMaximum(ExportOptions.ExportMessagesAsSingleHtml);
+                ExportProgress.IncrementMaximum(ExportOptions.ExportAttachmentsWithMessage);
+
+                if(ExportOptions.ExportMessagesAsOriginal)
+                {
+                    string fileName = IOHelper.GetFileNameWithoutCollisions(Path.Combine(path, message.GetFilenameForSavingOriginal(ExportOptions)));
+                    fileNames.AddIfNotNullOrEmpty(SaveMessageOriginalToFile(message, fileName));
+                }
+                if (ExportOptions.ExportMessagesAsMsg)
+                {
+                    string fileName = IOHelper.GetFileNameWithoutCollisions(Path.Combine(path, message.GetFilenameForSaving(ExportOptions) + ".msg"));
+                    fileNames.AddIfNotNullOrEmpty(SaveMessageMsgToFile(message, fileName));
+                }
+                if (ExportOptions.ExportMessagesAsSingleHtml)
+                {
+                    string fileName = IOHelper.GetFileNameWithoutCollisions(Path.Combine(path, message.GetFilenameForSaving(ExportOptions) + ".html"));
+                    fileNames.AddIfNotNullOrEmpty(SaveMessageSingleHtmlToFile(message, fileName));
+                }
+                if (ExportOptions.ExportAttachmentsWithMessage)
+                {
+                    fileNames.AddRangeIfNotNullOrEmpty(SaveAttachments(message, path));
+                }
+
+                return fileNames;
+            }
+            finally { ExportProgress.Step($"Processed Message {message}"); }
         }
 
         public IEnumerable<string> SaveMessages(XstFolder? folder, string path)
         {
-            if (folder == null)
-                return Enumerable.Empty<string>();
-
-            var fileNames = new List<string>();
-
-            foreach (var message in folder.Messages.OrderBy(m => m.LastModificationTime))
-                fileNames.AddRangeIfNotNullOrEmpty(SaveMessage(message, path));
-
-            if (ExportOptions.IncludeSubfolders)
+            try
             {
-                foreach (var subFolder in folder.Folders.OrderBy(f => f.LastModificationTime))
+                if (folder == null)
+                    return Enumerable.Empty<string>();
+
+                var fileNames = new List<string>();
+
+                ExportProgress.IncrementMaximum(folder.Messages.Count());
+                ExportProgress.IncrementMaximum(ExportOptions.IncludeSubfolders, folder.Folders.Count());
+
+                foreach (var message in folder.Messages.OrderBy(m => m.LastModificationTime))
+                    fileNames.AddRangeIfNotNullOrEmpty(SaveMessage(message, path));
+
+                if (ExportOptions.IncludeSubfolders)
                 {
-                    var subfolderPath = CreateDirForFolder(subFolder, path);
-                    var savedFiles = SaveMessages(subFolder, subfolderPath);
-                    if (!savedFiles.Any())
-                        try { Directory.Delete(subfolderPath); }
-                        catch { }
-                    fileNames.AddRangeIfNotNullOrEmpty(savedFiles);
+                    foreach (var subFolder in folder.Folders.OrderBy(f => f.LastModificationTime))
+                    {
+                        var subfolderPath = CreateDirForFolder(subFolder, path);
+                        var savedFiles = SaveMessages(subFolder, subfolderPath);
+                        if (!savedFiles.Any())
+                            try { Directory.Delete(subfolderPath); }
+                            catch { }
+                        fileNames.AddRangeIfNotNullOrEmpty(savedFiles);
+                    }
                 }
+                return fileNames;
             }
-            return fileNames;
+            finally { ExportProgress.Step($"Processed Folder {folder}"); }
         }
         public IEnumerable<string> SaveMessages(XstFile? xstFile, string path)
         {
-            if (xstFile == null)
-                return Enumerable.Empty<string>();
+            try
+            {
+                if (xstFile == null)
+                    return Enumerable.Empty<string>();
 
-            var fileNames = new List<string>();
+                var fileNames = new List<string>();
 
-            string rootFolderPath = CreateDirForFolder(xstFile.RootFolder, path);
-            fileNames.AddRangeIfNotNullOrEmpty(SaveMessages(xstFile.RootFolder, rootFolderPath));
+                ExportProgress.IncrementMaximum();
 
-            if (!fileNames.Any())
-                try { Directory.Delete(rootFolderPath); }
-                catch { }
+                string rootFolderPath = CreateDirForFolder(xstFile.RootFolder, path);
+                fileNames.AddRangeIfNotNullOrEmpty(SaveMessages(xstFile.RootFolder, rootFolderPath));
 
-            return fileNames;
+                if (!fileNames.Any())
+                    try { Directory.Delete(rootFolderPath); }
+                    catch { }
+
+                return fileNames;
+            }
+            finally { ExportProgress.Step($"Processed File {xstFile}"); }
         }
         #endregion Messages
 
