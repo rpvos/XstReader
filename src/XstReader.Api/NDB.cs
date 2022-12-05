@@ -537,7 +537,13 @@ namespace XstReader
                         if (buffer == null)
                             buffer = new byte[rb.InflatedLength];
 
-                        decompressionStream.Read(buffer, offset, rb.InflatedLength);
+                        var writable = new MemoryStream(buffer, offset, rb.InflatedLength, true);
+                        decompressionStream.CopyTo(writable);
+
+                        if (writable.Position != writable.Length)
+                        {
+                            throw new EndOfStreamException();
+                        }
                     }
                     read = rb.InflatedLength;
                 }
