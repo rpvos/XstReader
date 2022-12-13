@@ -93,6 +93,14 @@ namespace XstReader
         public virtual string Cc => Properties[PropertyCanonicalName.PidTagDisplayCc]?.ValueAsStringSanitized;
 
         /// <summary>
+        /// The Cc Summary of the Message
+        /// </summary>
+        [DisplayName("Display Bcc")]
+        [Category(@"Message Properties")]
+        [Description(@"Contains a list of clind carbon copy (Bcc) recipient display names.")]
+        public virtual string Bcc => Properties[PropertyCanonicalName.PidTagDisplayBcc]?.ValueAsStringSanitized;
+
+        /// <summary>
         /// The To Summary of the Message
         /// </summary>
         [DisplayName("Display To")]

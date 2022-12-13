@@ -13,8 +13,8 @@
     <RepositoryUrl>https://github.com/iluvadev/XstReader</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>pst-file-viewer;outlook</PackageTags>
-    <AssemblyVersion>2.0.0</AssemblyVersion>
-    <FileVersion>2.0.0</FileVersion>
+    <AssemblyVersion>2.1.0</AssemblyVersion>
+    <FileVersion>2.1.0</FileVersion>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
     <PackageId>XstReader</PackageId>
     <Version>2.2.0</Version>

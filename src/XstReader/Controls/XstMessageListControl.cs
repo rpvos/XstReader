@@ -18,6 +18,8 @@ namespace XstReader.App.Controls
                                                  IXstDataSourcedControl<IEnumerable<XstMessage>>,
                                                  IXstElementSelectable<XstMessage>
     {
+        private string _LastSearchedText = string.Empty;
+
         public XstMessageListControl()
         {
             InitializeComponent();
@@ -31,7 +33,10 @@ namespace XstReader.App.Controls
             ObjectListView.Columns.Add(new OLVColumn("Subject", nameof(XstMessage.Subject)) { WordWrap = true, FillsFreeSpace = true });
             ObjectListView.Columns.Add(new OLVColumn("From", nameof(XstMessage.From)) { Width = 150 });
             ObjectListView.Columns.Add(new OLVColumn("To", nameof(XstMessage.To)) { Width = 150 });
+            ObjectListView.Columns.Add(new OLVColumn("Cc", nameof(XstMessage.Cc)) { Width = 150 });
+            //ObjectListView.Columns.Add(new OLVColumn("Bcc", nameof(XstMessage.Bcc)) { Width = 150 });
             ObjectListView.Columns.Add(new OLVColumn("Date", nameof(XstMessage.Date)) { Width = 150 });
+
 
             ObjectListView.FormatRow += (s, e) =>
             {
@@ -48,6 +53,30 @@ namespace XstReader.App.Controls
             ObjectListView.ItemSelectionChanged += (s, e) => RaiseSelectedItemChanged();
 
             SetDataSource(null);
+
+            SearchTextButton.Click += (s, e) =>
+            {
+                TimerSearchText.Stop();
+                _LastSearchedText = SearchTextBox.Text;
+                ObjectListView.ModelFilter = TextMatchFilter.Contains(ObjectListView, _LastSearchedText);
+            };
+            SearchTextCancelButton.Click += (s, e) =>
+            {
+                SearchTextBox.Clear();
+                SearchTextButton.PerformClick();
+            };
+            SearchTextBox.TextChanged += (s, e) =>
+            {
+                TimerSearchText.Start();
+                SearchTextCancelButton.Enabled = string.IsNullOrEmpty(SearchTextBox.Text) ? ButtonEnabled.False : ButtonEnabled.Container;
+            };
+
+            TimerSearchText.Tick += (s, e) =>
+            {
+                TimerSearchText.Stop();
+                if (SearchTextBox.Text != _LastSearchedText)
+                    SearchTextButton.PerformClick();
+            };
         }
 
         protected override void OnLoad(EventArgs e)
@@ -68,6 +97,7 @@ namespace XstReader.App.Controls
 
         public void SetDataSource(IEnumerable<XstMessage>? dataSource)
         {
+            SearchTextBox.Clear();
             _DataSource = dataSource;
             ObjectListView.Objects = dataSource;
             RaiseSelectedItemChanged();
