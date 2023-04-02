@@ -28,82 +28,134 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.MainKryptonPanel = new Krypton.Toolkit.KryptonPanel();
-            this.KryptonWebBrowser = new Krypton.Toolkit.KryptonWebBrowser();
-            this.KryptonDockingManager = new Krypton.Docking.KryptonDockingManager();
-            this.KryptonToolStrip = new Krypton.Toolkit.KryptonToolStrip();
-            this.ExportToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.PrintToolStripButton = new System.Windows.Forms.ToolStripButton();
-            ((System.ComponentModel.ISupportInitialize)(this.MainKryptonPanel)).BeginInit();
-            this.MainKryptonPanel.SuspendLayout();
-            this.KryptonToolStrip.SuspendLayout();
-            this.SuspendLayout();
+            MainKryptonPanel = new Krypton.Toolkit.KryptonPanel();
+            MainTabControl = new TabControl();
+            MessageTabPage = new TabPage();
+            KryptonWebBrowser = new Krypton.Toolkit.KryptonWebBrowser();
+            TransportHeadersTabPage = new TabPage();
+            TransportHeadersTextBox = new Krypton.Toolkit.KryptonTextBox();
+            KryptonDockingManager = new Krypton.Docking.KryptonDockingManager();
+            KryptonToolStrip = new Krypton.Toolkit.KryptonToolStrip();
+            ExportToolStripButton = new ToolStripButton();
+            PrintToolStripButton = new ToolStripButton();
+            ((System.ComponentModel.ISupportInitialize)MainKryptonPanel).BeginInit();
+            MainKryptonPanel.SuspendLayout();
+            MainTabControl.SuspendLayout();
+            MessageTabPage.SuspendLayout();
+            TransportHeadersTabPage.SuspendLayout();
+            KryptonToolStrip.SuspendLayout();
+            SuspendLayout();
             // 
             // MainKryptonPanel
             // 
-            this.MainKryptonPanel.Controls.Add(this.KryptonWebBrowser);
-            this.MainKryptonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainKryptonPanel.Location = new System.Drawing.Point(0, 31);
-            this.MainKryptonPanel.Name = "MainKryptonPanel";
-            this.MainKryptonPanel.Size = new System.Drawing.Size(435, 426);
-            this.MainKryptonPanel.TabIndex = 1;
+            MainKryptonPanel.Controls.Add(MainTabControl);
+            MainKryptonPanel.Dock = DockStyle.Fill;
+            MainKryptonPanel.Location = new Point(0, 31);
+            MainKryptonPanel.Name = "MainKryptonPanel";
+            MainKryptonPanel.Size = new Size(435, 426);
+            MainKryptonPanel.TabIndex = 1;
+            // 
+            // MainTabControl
+            // 
+            MainTabControl.Controls.Add(MessageTabPage);
+            MainTabControl.Controls.Add(TransportHeadersTabPage);
+            MainTabControl.Dock = DockStyle.Fill;
+            MainTabControl.Location = new Point(0, 0);
+            MainTabControl.Name = "MainTabControl";
+            MainTabControl.SelectedIndex = 0;
+            MainTabControl.Size = new Size(435, 426);
+            MainTabControl.TabIndex = 4;
+            // 
+            // MessageTabPage
+            // 
+            MessageTabPage.Controls.Add(KryptonWebBrowser);
+            MessageTabPage.Location = new Point(4, 24);
+            MessageTabPage.Name = "MessageTabPage";
+            MessageTabPage.Padding = new Padding(3);
+            MessageTabPage.Size = new Size(427, 398);
+            MessageTabPage.TabIndex = 0;
+            MessageTabPage.Text = "Message";
+            MessageTabPage.UseVisualStyleBackColor = true;
             // 
             // KryptonWebBrowser
             // 
-            this.KryptonWebBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.KryptonWebBrowser.Location = new System.Drawing.Point(0, 0);
-            this.KryptonWebBrowser.Name = "KryptonWebBrowser";
-            this.KryptonWebBrowser.Size = new System.Drawing.Size(435, 426);
-            this.KryptonWebBrowser.TabIndex = 3;
+            KryptonWebBrowser.Dock = DockStyle.Fill;
+            KryptonWebBrowser.Location = new Point(3, 3);
+            KryptonWebBrowser.Name = "KryptonWebBrowser";
+            KryptonWebBrowser.Size = new Size(421, 392);
+            KryptonWebBrowser.TabIndex = 3;
+            // 
+            // TransportHeadersTabPage
+            // 
+            TransportHeadersTabPage.Controls.Add(TransportHeadersTextBox);
+            TransportHeadersTabPage.Location = new Point(4, 24);
+            TransportHeadersTabPage.Name = "TransportHeadersTabPage";
+            TransportHeadersTabPage.Padding = new Padding(3);
+            TransportHeadersTabPage.Size = new Size(427, 398);
+            TransportHeadersTabPage.TabIndex = 1;
+            TransportHeadersTabPage.Text = "Transport Headers";
+            TransportHeadersTabPage.UseVisualStyleBackColor = true;
+            // 
+            // TransportHeadersTextBox
+            // 
+            TransportHeadersTextBox.Dock = DockStyle.Fill;
+            TransportHeadersTextBox.Location = new Point(3, 3);
+            TransportHeadersTextBox.Multiline = true;
+            TransportHeadersTextBox.Name = "TransportHeadersTextBox";
+            TransportHeadersTextBox.ReadOnly = true;
+            TransportHeadersTextBox.ScrollBars = ScrollBars.Both;
+            TransportHeadersTextBox.Size = new Size(421, 392);
+            TransportHeadersTextBox.TabIndex = 0;
             // 
             // KryptonToolStrip
             // 
-            this.KryptonToolStrip.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.KryptonToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.KryptonToolStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.KryptonToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ExportToolStripButton,
-            this.PrintToolStripButton});
-            this.KryptonToolStrip.Location = new System.Drawing.Point(0, 0);
-            this.KryptonToolStrip.Name = "KryptonToolStrip";
-            this.KryptonToolStrip.Size = new System.Drawing.Size(435, 31);
-            this.KryptonToolStrip.TabIndex = 2;
-            this.KryptonToolStrip.Text = "kryptonToolStrip1";
+            KryptonToolStrip.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            KryptonToolStrip.GripStyle = ToolStripGripStyle.Hidden;
+            KryptonToolStrip.ImageScalingSize = new Size(24, 24);
+            KryptonToolStrip.Items.AddRange(new ToolStripItem[] { ExportToolStripButton, PrintToolStripButton });
+            KryptonToolStrip.Location = new Point(0, 0);
+            KryptonToolStrip.Name = "KryptonToolStrip";
+            KryptonToolStrip.Size = new Size(435, 31);
+            KryptonToolStrip.TabIndex = 2;
+            KryptonToolStrip.Text = "kryptonToolStrip1";
             // 
             // ExportToolStripButton
             // 
-            this.ExportToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ExportToolStripButton.Image = global::XstReader.App.Properties.Resources.content_save;
-            this.ExportToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ExportToolStripButton.Name = "ExportToolStripButton";
-            this.ExportToolStripButton.Size = new System.Drawing.Size(28, 28);
-            this.ExportToolStripButton.Text = "Export message";
-            this.ExportToolStripButton.ToolTipText = "Export Message";
+            ExportToolStripButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            ExportToolStripButton.Image = Properties.Resources.content_save;
+            ExportToolStripButton.ImageTransparentColor = Color.Magenta;
+            ExportToolStripButton.Name = "ExportToolStripButton";
+            ExportToolStripButton.Size = new Size(28, 28);
+            ExportToolStripButton.Text = "Export message";
+            ExportToolStripButton.ToolTipText = "Export Message";
             // 
             // PrintToolStripButton
             // 
-            this.PrintToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.PrintToolStripButton.Image = global::XstReader.App.Properties.Resources.printer;
-            this.PrintToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.PrintToolStripButton.Name = "PrintToolStripButton";
-            this.PrintToolStripButton.Size = new System.Drawing.Size(28, 28);
-            this.PrintToolStripButton.Text = "Print...";
+            PrintToolStripButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            PrintToolStripButton.Image = Properties.Resources.printer;
+            PrintToolStripButton.ImageTransparentColor = Color.Magenta;
+            PrintToolStripButton.Name = "PrintToolStripButton";
+            PrintToolStripButton.Size = new Size(28, 28);
+            PrintToolStripButton.Text = "Print...";
             // 
             // XstMessageContentViewControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.MainKryptonPanel);
-            this.Controls.Add(this.KryptonToolStrip);
-            this.Name = "XstMessageContentViewControl";
-            this.Size = new System.Drawing.Size(435, 457);
-            ((System.ComponentModel.ISupportInitialize)(this.MainKryptonPanel)).EndInit();
-            this.MainKryptonPanel.ResumeLayout(false);
-            this.KryptonToolStrip.ResumeLayout(false);
-            this.KryptonToolStrip.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(MainKryptonPanel);
+            Controls.Add(KryptonToolStrip);
+            Name = "XstMessageContentViewControl";
+            Size = new Size(435, 457);
+            ((System.ComponentModel.ISupportInitialize)MainKryptonPanel).EndInit();
+            MainKryptonPanel.ResumeLayout(false);
+            MainTabControl.ResumeLayout(false);
+            MessageTabPage.ResumeLayout(false);
+            TransportHeadersTabPage.ResumeLayout(false);
+            TransportHeadersTabPage.PerformLayout();
+            KryptonToolStrip.ResumeLayout(false);
+            KryptonToolStrip.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -114,5 +166,9 @@
         private Krypton.Toolkit.KryptonWebBrowser KryptonWebBrowser;
         private ToolStripButton PrintToolStripButton;
         private ToolStripButton ExportToolStripButton;
+        private TabControl MainTabControl;
+        private TabPage MessageTabPage;
+        private TabPage TransportHeadersTabPage;
+        private Krypton.Toolkit.KryptonTextBox TransportHeadersTextBox;
     }
 }

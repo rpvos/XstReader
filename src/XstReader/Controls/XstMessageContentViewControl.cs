@@ -94,6 +94,8 @@ namespace XstReader.App.Controls
             {
                 MessageBox.Show(ex.Message, "Error showing message");
             }
+
+            TransportHeadersTextBox.Text = _DataSource?.Properties[ElementProperties.PropertyCanonicalName.PidTagTransportMessageHeaders]?.Value ?? string.Empty;
         }
 
         public void Print()
