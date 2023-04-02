@@ -80,6 +80,9 @@ namespace XstReader.App.Controls
             var node = new KryptonTreeNode(name) { Tag = folder };
             _DicMapFoldersNodes[folder.GetId()] = node;
 
+            if (folder.HasErrorInFolders || folder.HasErrorInMessages)
+                node.ForeColor = Color.Red;
+
             if (parentNode == null) MainTreeView.Nodes.Add(node);
             else parentNode.Nodes.Add(node);
 

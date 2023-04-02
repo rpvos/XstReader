@@ -13,7 +13,6 @@ using Krypton.Toolkit;
 using System.Data;
 using XstReader.App.Controls;
 using XstReader.App.Helpers;
-using XstReader.Exporter;
 
 namespace XstReader.App
 {
@@ -54,6 +53,7 @@ namespace XstReader.App
             if (value is XstFolder folder)
             {
                 MessageListControl.SetDataSource(folder?.Messages?.OrderByDescending(m => m.Date));//, MessageFilter.GetSelectedFilter());
+                MessageListControl.SetError(folder?.HasErrorInMessages ?? false, folder?.ErrorInMessages ?? "");
             }
             else if (value is XstMessage message)
             {

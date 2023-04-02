@@ -79,6 +79,7 @@ namespace XstReader.App.Controls
 
             RecipientListControl.SetDataSource(dataSource?.Recipients.Items);
             AttachmentListControl.SetDataSource(dataSource?.Attachments);
+            AttachmentListControl.SetError(dataSource?.HasErrorInAttachments ?? false, dataSource?.ErrorInAttachments ?? "");
 
             //var htmlText = _DataSource?.GetHtmlVisualization() ?? "";
             var htmlText = _DataSource.RenderAsHtml();

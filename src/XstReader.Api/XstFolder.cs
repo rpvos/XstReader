@@ -69,6 +69,20 @@ namespace XstReader
         [Browsable(false)]
         public bool HasSubFolders => Folders.Any();
 
+        /// <summary>
+        /// Says if there are errors reading inner Folders
+        /// </summary>
+        [Category("Errors")]
+        [Description(@"Says if there are errors reading inner Folders")]
+        public bool HasErrorInFolders { get; set; } = false;
+
+        /// <summary>
+        /// The error reading inner Folders
+        /// </summary>
+        [Category("Errors")]
+        [Description(@"The error reading inner Folders")]
+        public string ErrorInFolders { get; set; } = "";
+
 
         /// <summary>
         /// The Parents of this Folder
@@ -103,6 +117,19 @@ namespace XstReader
         /// </summary>
         [Browsable(false)]
         public IEnumerable<XstMessage> Messages => GetMessages();
+        /// <summary>
+        /// Says if there are errors reading inner Messages
+        /// </summary>
+        [Category("Errors")]
+        [Description(@"Says if there are errors reading inner Messages")]
+        public bool HasErrorInMessages { get; set; } = false;
+
+        /// <summary>
+        /// The error reading inner Messages
+        /// </summary>
+        [Category("Errors")]
+        [Description(@"The error reading inner Messages")]
+        public string ErrorInMessages { get; set; } = "";
         /// <summary>
         /// The unread Messages contained in the Folder
         /// </summary>
@@ -148,9 +175,11 @@ namespace XstReader
                                   .Select(id => new XstFolder(XstFile, id, this))
                                   .OrderBy(sf => sf.DisplayName);
                 }
-                catch
+                catch(Exception ex) 
                 {
                     _Folders = Enumerable.Empty<XstFolder>();
+                    HasErrorInFolders = true;
+                    ErrorInFolders = ex.Message;
                 }
             return _Folders;
         }
@@ -174,9 +203,11 @@ namespace XstReader
                                                               (m, id) => m.Initialize(new NID(id), this),
                                                               m => m.ProcessSignedOrEncrypted());
                     }
-                    catch
+                    catch(Exception ex)
                     {
                         _Messages = Enumerable.Empty<XstMessage>();
+                        HasErrorInMessages = true;
+                        ErrorInMessages = ex.Message;
                     }
                 else
                     _Messages = Enumerable.Empty<XstMessage>();
@@ -192,6 +223,8 @@ namespace XstReader
                 foreach (var folder in _Folders)
                     folder.ClearContentsInternal();
             _Folders = null;
+            HasErrorInFolders = false;
+            ErrorInFolders = "";
         }
         private void ClearMessages()
         {
@@ -199,6 +232,8 @@ namespace XstReader
                 foreach (var message in _Messages)
                     message.ClearContentsInternal();
             _Messages = null;
+            HasErrorInMessages = false;
+            ErrorInMessages = "";
         }
         internal override void ClearContentsInternal()
         {

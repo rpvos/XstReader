@@ -33,12 +33,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Krypton.Docking" Version="65.22.6.152" />
-    <PackageReference Include="Krypton.Navigator" Version="65.22.6.152" />
-    <PackageReference Include="Krypton.Toolkit" Version="65.22.6.152" />
-    <PackageReference Include="Krypton.Workspace" Version="65.22.6.152" />
+    <PackageReference Include="Krypton.Docking" Version="70.22.11.312" />
+    <PackageReference Include="Krypton.Navigator" Version="70.22.11.312" />
+    <PackageReference Include="Krypton.Toolkit" Version="70.22.11.312" />
+    <PackageReference Include="Krypton.Workspace" Version="70.22.11.312" />
     <PackageReference Include="ObjectListView.Repack.Core3" Version="2.9.2" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

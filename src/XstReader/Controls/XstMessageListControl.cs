@@ -102,6 +102,16 @@ namespace XstReader.App.Controls
             ObjectListView.Objects = dataSource;
             RaiseSelectedItemChanged();
         }
+        public void SetError(bool error, string message)
+        {
+            ErrorLabel.Values.Text = "Error reading attachments";
+            ErrorLabel.Values.ExtraText = message;
+            ErrorLabel.Visible = error;
+            if (error)
+                ErrorLabel.BringToFront();
+            else
+                ErrorLabel.SendToBack();
+        }
 
         public XstMessage? GetSelectedItem()
         {

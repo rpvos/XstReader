@@ -92,6 +92,16 @@ namespace XstReader.App.Controls
             _DataSource = dataSource;
             RefreshFilters();
         }
+        public void SetError(bool error, string message)
+        {
+            ErrorLabel.Values.Text = "Error reading attachments";
+            ErrorLabel.Values.ExtraText = message;
+            ErrorLabel.Visible = error;
+            if(error)
+                ErrorLabel.BringToFront();
+            else
+                ErrorLabel.SendToBack();
+        }
 
         private void RefreshFilters()
         {

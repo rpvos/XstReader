@@ -354,6 +354,21 @@ namespace XstReader
         [Obsolete("This property is Obsolete. Use Attachments.VisibleFiles().Any() instead")]
         [Browsable(false)]
         public virtual bool HasAttachmentsVisibleFiles => Attachments.VisibleFiles().Any();
+
+        /// <summary>
+        /// Says if there are errors reading inner Attachments
+        /// </summary>
+        [Category("Errors")]
+        [Description(@"Says if there are errors reading inner Attachments")]
+        public bool HasErrorInAttachments { get; set; } = false;
+
+        /// <summary>
+        /// The error reading inner Attachments
+        /// </summary>
+        [Category("Errors")]
+        [Description(@"The error reading inner Attachments")]
+        public string ErrorInAttachments { get; set; } = "";
+
         #endregion Attachments Class Properties
 
         #region Content Exclusions
@@ -446,8 +461,16 @@ namespace XstReader
         public virtual IEnumerable<XstAttachment> GetAttachments()
         {
             if (_Attachments == null)
-                try { _Attachments = GetAttachmentsInternal(); }
-                catch { _Attachments = Enumerable.Empty<XstAttachment>(); }
+                try
+                {
+                    _Attachments = GetAttachmentsInternal();
+                }
+                catch (Exception ex) 
+                {
+                    _Attachments = Enumerable.Empty<XstAttachment>();
+                    HasErrorInAttachments = true;
+                    ErrorInAttachments = ex.Message;
+                }
 
             return _Attachments;
         }
@@ -562,6 +585,8 @@ namespace XstReader
             //    foreach (var attachment in _Attachments)
             //        attachment.ClearContents();
             _Attachments = null;
+            HasErrorInAttachments = false;
+            ErrorInAttachments = "";
         }
         private void ClearRecipients()
         {
