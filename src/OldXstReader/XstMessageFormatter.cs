@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using XstReader.ElementProperties;
+using XstReader.Exporter.MsgKit;
 
 namespace XstReader
 {
@@ -38,12 +39,11 @@ namespace XstReader
         }
 
         public string ExportFileExtension
-            => Message?.Body.Format == XstMessageBodyFormat.Html ? "html" 
-               : Message?.Body.Format == XstMessageBodyFormat.Rtf ? "rtf" 
+            => Message?.Body.Format == XstMessageBodyFormat.Html ? "html"
+               : Message?.Body.Format == XstMessageBodyFormat.Rtf ? "rtf"
                : "txt";
 
-        private string _ExportFileName = null;
-        public string ExportFileName => _ExportFileName ?? (_ExportFileName = String.Format("{0:yyyy-MM-dd HHmm} {1}", Message?.Date, Message?.Subject).Truncate(150).ReplaceInvalidFileNameChars(" "));
+        public string ExportFileName => String.Format("{0:yyyy-MM-dd HHmm} {1}", Message?.Date, Message?.Subject).Truncate(150).ReplaceInvalidFileNameChars(" ");
 
         private XstRecipient OriginatorRecipient => Message.Recipients[RecipientType.Originator].FirstOrDefault();
         private IEnumerable<XstRecipient> ToRecipients => Message.Recipients[RecipientType.To];
@@ -130,6 +130,20 @@ namespace XstReader
 
         public string EmbedTextHeader(string body)
             => TxtHeader + body ?? "";
+
+        public string SaveMessageMsgToFile(string fileName)
+        {
+            if (Message == null)
+                return "";
+
+            new MessageXst(Message).Save(fileName);
+            if (!File.Exists(fileName))
+                return "";
+
+            if (Message.Date.HasValue)
+                File.SetLastWriteTime(fileName, Message.Date.Value);
+            return fileName;
+        }
 
         public void SaveMessage(string fullFileName, bool includeVisibleAttachments = true)
         {

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Version>2.0.1</Version>
     <AssemblyVersion>2.0.1</AssemblyVersion>
     <FileVersion>2.0.1</FileVersion>
@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\XstReader.Api\XstReader.Api.csproj" />
+    <ProjectReference Include="..\XstReader.Exporter\XstReader.Exporter.csproj" />
   </ItemGroup>
 
   <ItemGroup>

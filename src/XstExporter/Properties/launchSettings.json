@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "XstExporter": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\Users\\RIkVos\\Documents\\Outlook Files\\backup.pst\" -t=\"C:\\Users\\RIkVos\\Documents\\Outlook Files\\test\" --email --msg"
+    }
+  }
+}

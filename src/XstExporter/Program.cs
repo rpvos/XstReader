@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using XstReader;
+using XstReader.Exporter.MsgKit;
 
 namespace XstExporter
 {
@@ -61,6 +62,9 @@ namespace XstExporter
             "      By default, output is written to a directory <Outlook file name>.Export.<Command>",
             "      created in the same directory as the Outlook file",
             "",
+            "   -m, --msg",
+            "      Set export format to msg",
+            "",
             "   <Outlook file name>",
             "      The full name of the .pst or .ost file from which to export",
             "",
@@ -82,6 +86,7 @@ namespace XstExporter
             bool only = false;
             bool subfolders = false;
             string exportDir = null;
+            bool asMsg = false;
 
             try
             {
@@ -94,6 +99,7 @@ namespace XstExporter
                     { "o|only", v => only = true },
                     { "s|subfolders", v => subfolders = true },
                     { "t|target=", v => exportDir = v },
+                    { "m|msg", v => asMsg = true },
                 };
                 List<string> outlookFiles = argParser.Parse(args);
 
@@ -192,7 +198,7 @@ namespace XstExporter
                         else
                             targetDir = exportDir;
 
-                        ExportFolder(f, command, targetDir);
+                        ExportFolder(f, command, targetDir, asMsg);
                     }
                 }
             }
@@ -218,7 +224,7 @@ namespace XstExporter
             return 0;
         }
 
-        private static void ExportFolder(XstFolder folder, Command command, string exportDir)
+        private static void ExportFolder(XstFolder folder, Command command, string exportDir, bool asMsg)
         {
             if (folder.ContentCount == 0)
             {
@@ -236,7 +242,7 @@ namespace XstExporter
             switch (command)
             {
                 case Command.Email:
-                    ExtractEmailsInFolder(folder, exportDir);
+                    ExtractEmailsInFolder(folder, exportDir, asMsg);
                     break;
                 case Command.Properties:
                     ExtractPropertiesInFolder(folder, exportDir);
@@ -322,7 +328,7 @@ namespace XstExporter
             return filename.ReplaceInvalidFileNameChars("");
         }
 
-        private static void ExtractEmailsInFolder(XstFolder folder, string exportDirectory)
+        private static void ExtractEmailsInFolder(XstFolder folder, string exportDirectory, bool asMsg)
         {
             XstMessage current = null;
             int good = 0, bad = 0;
@@ -351,7 +357,14 @@ namespace XstExporter
                     }
 
                     Console.WriteLine($"Exporting {formatter.ExportFileName}");
-                    formatter.SaveMessage(Path.Combine(exportDirectory, $"{fileName}.{formatter.ExportFileExtension}"));
+                    if (asMsg)
+                    {
+                        formatter.SaveMessageMsgToFile(Path.Combine(exportDirectory, $"{fileName}.msg"));
+                    }
+                    else
+                    {
+                        formatter.SaveMessage(Path.Combine(exportDirectory, $"{fileName}.{formatter.ExportFileExtension}"));
+                    }
                     good++;
                 }
                 catch (System.Exception ex)
