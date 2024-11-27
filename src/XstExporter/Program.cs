@@ -82,11 +82,12 @@ namespace XstExporter
         {
             int commands = 0;
             Command command = Command.Help;
-            string outlookFolder = null;
+            string outlookFolder = "";
             bool only = false;
             bool subfolders = false;
-            string exportDir = null;
+            string exportDir = "";
             bool asMsg = false;
+            bool useDfs = false;
 
             try
             {
@@ -100,6 +101,7 @@ namespace XstExporter
                     { "s|subfolders", v => subfolders = true },
                     { "t|target=", v => exportDir = v },
                     { "m|msg", v => asMsg = true },
+                    { "d|useDfs", v => useDfs = true },
                 };
                 List<string> outlookFiles = argParser.Parse(args);
 
@@ -139,7 +141,7 @@ namespace XstExporter
                     };
                 }
 
-                if (exportDir != null)
+                if (exportDir.Length > 0)
                 {
                     // Handle relative target directory
                     if (!Path.IsPathRooted(exportDir)) // IsPathFullyQualified would be better, but not in 4
@@ -153,10 +155,17 @@ namespace XstExporter
                 {
                     var root = xstFile.RootFolder;
 
-                    XstFolder sourceFolder = null;
-                    if (outlookFolder != null)
+                    XstFolder? sourceFolder = null;
+                    if (outlookFolder.Length > 0)
                     {
-                        sourceFolder = FindOutlookFolder(root, outlookFolder);
+                        if (useDfs)
+                        {
+                            sourceFolder = FindOutlookFolderDfs(root, outlookFolder);
+                        }
+                        else
+                        {
+                            sourceFolder = FindOutlookFolder(root, outlookFolder);
+                        }
                         if (sourceFolder == null)
                         {
                             throw new XstExportException
@@ -187,18 +196,24 @@ namespace XstExporter
                             sources.AddRange(sourceFolder.Folders.Flatten(f => f.Folders));
                         }
                         else
+                        {
                             sources.AddRange(root.Folders.Flatten(f => f.Folders));
+                        }
                     }
 
-                    foreach (var f in sources)
+                    foreach (var folder in sources)
                     {
                         string targetDir;
                         if (subfolders)
-                            targetDir = Path.Combine(exportDir, ValidFolderPath(f));
+                        {
+                            targetDir = Path.Combine(exportDir, ValidFolderPath(folder));
+                        }
                         else
+                        {
                             targetDir = exportDir;
+                        }
 
-                        ExportFolder(f, command, targetDir, asMsg);
+                        ExportFolder(folder, command, targetDir, asMsg);
                     }
                 }
             }
@@ -228,7 +243,7 @@ namespace XstExporter
         {
             if (folder.ContentCount == 0)
             {
-                Console.WriteLine($"Skipping folder '{folder.DisplayName}', which is empty");
+                //Console.WriteLine($"Skipping folder '{folder.DisplayName}', which is empty");
                 return;
             }
 
@@ -261,13 +276,16 @@ namespace XstExporter
                 var di = new DirectoryInfo(exportDir);
                 if (!di.EnumerateFiles().Any() &&
                     !di.EnumerateDirectories().Any())
+                {
                     di.Delete();
+                }
             }
         }
 
-        private static XstFolder FindOutlookFolder(XstFolder root, string outlookFolder)
+        private static XstFolder? FindOutlookFolder(XstFolder root, string outlookFolder)
         {
-            string[] folders = outlookFolder.Split(new char[] { '\\', '/' }); // Accept backward or forward slash
+            char[] separators = ['\\', '/'];
+            string[] folders = outlookFolder.Split(separators); // Accept backward or forward slash
 
             // We do a breadth first search of the folder tree
             Queue<XstFolder> q = new Queue<XstFolder>();
@@ -287,7 +305,30 @@ namespace XstExporter
             return null;
         }
 
-        private static XstFolder FolderMatch(XstFolder folder, string[] folderNames)
+        private static XstFolder? FindOutlookFolderDfs(XstFolder root, string outlookFolder)
+        {
+            char[] separators = ['\\', '/'];
+            string[] folders = outlookFolder.Split(separators); // Accept backward or forward slash
+
+            // We do a breadth first search of the folder tree
+            Stack<XstFolder> q = new Stack<XstFolder>();
+            q.Push(root);
+
+            while (q.Count > 0)
+            {
+                var f = q.Pop();
+                var match = FolderMatch(f, folders);
+                if (match != null)
+                    return match;
+
+                foreach (var child in f.Folders)
+                    q.Push(child);
+            }
+
+            return null;
+        }
+
+        private static XstFolder? FolderMatch(XstFolder folder, string[] folderNames)
         {
             // First name segment must match
             if (String.Compare(folder.DisplayName, folderNames[0], true) != 0)
@@ -330,7 +371,6 @@ namespace XstExporter
 
         private static void ExtractEmailsInFolder(XstFolder folder, string exportDirectory, bool asMsg)
         {
-            XstMessage current = null;
             int good = 0, bad = 0;
             // If files already exist, we overwrite them.
             // But if emails within this batch generate the same filename,
@@ -338,38 +378,39 @@ namespace XstExporter
             HashSet<string> usedNames = new HashSet<string>();
 
             var formatter = new XstMessageFormatter();
-            foreach (XstMessage m in folder.Messages)
+            foreach (var message in folder.Messages)
             {
                 try
                 {
-                    current = m;
-                    formatter.Message = m;
+                    formatter.Message = message;
                     string fileName = formatter.ExportFileName;
-                    for (int i = 1; ; i++)
+                    for (int i = 1; usedNames.Contains(fileName); i++)
                     {
-                        if (!usedNames.Contains(fileName))
-                        {
-                            usedNames.Add(fileName);
-                            break;
-                        }
-                        else
-                            fileName = $"{formatter.ExportFileName} ({i})";
+                        fileName = $"{formatter.ExportFileName} ({i})";
                     }
-
-                    Console.WriteLine($"Exporting {formatter.ExportFileName}");
+                    usedNames.Add(fileName);
                     if (asMsg)
                     {
-                        formatter.SaveMessageMsgToFile(Path.Combine(exportDirectory, $"{fileName}.msg"));
+                        if (formatter.SaveMessageMsgToFile(Path.Combine(exportDirectory, $"{fileName}.msg")).Length == 0)
+                        {
+                            bad++;
+                            continue;
+                        }
                     }
                     else
                     {
+                        if (formatter.Message.Body == null)
+                        {
+                            bad++;
+                            continue;
+                        }
                         formatter.SaveMessage(Path.Combine(exportDirectory, $"{fileName}.{formatter.ExportFileExtension}"));
                     }
                     good++;
                 }
                 catch (System.Exception ex)
                 {
-                    Console.WriteLine($"Error '{ex.Message}' exporting email '{current.Subject}'");
+                    Console.WriteLine($"Error '{ex.Message}' exporting email '{message.Subject}'");
                     bad++;
                 }
             }

@@ -28,7 +28,7 @@ namespace XstReader.App.Controls
             PropertyGridProperties.SelectedGridItemChanged += (s, e)
                 => PropDescWebView.DocumentText = (e.NewSelection.PropertyDescriptor as CustomXstPropertyDescriptor)?.HtmlDescription ?? "";
 
-            PropDescWebView.DocumentCompleted += (s,e) => PropDescWebView.Document.Body.Style = "zoom:90%";
+            PropDescWebView.DocumentCompleted += (s, e) => PropDescWebView.Document.Body.Style = "zoom:90%";
             SaveToolStripButton.Click += (s, e) => SaveProperties();
         }
 
@@ -47,7 +47,14 @@ namespace XstReader.App.Controls
             ElementTypeLabel.Text = _DataSource?.ElementType.ToString();
             ElementNameLabel.Text = _DataSource?.ToString();
 
-            PropertyGridProperties.SelectedObject = _DataSource?.Properties.ToPropertyGridSelectedObject();
+            try
+            {
+                PropertyGridProperties.SelectedObject = _DataSource?.Properties.ToPropertyGridSelectedObject();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public void ClearContents()

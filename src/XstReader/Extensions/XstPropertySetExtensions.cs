@@ -30,8 +30,8 @@ namespace XstReader.App
             foreach (var tag in usedUnknownTags)
                 customizedPropClass.Add(new CustomXstProperty(propertySet[tag]));
 
-            ////foreach (var prop in propertySet.Items)
-            ////    customizedPropClass.Add(new CustomXstProperty(prop));
+            foreach (var prop in propertySet.Items)
+                customizedPropClass.Add(new CustomXstProperty(prop));
 
             return customizedPropClass;
         }

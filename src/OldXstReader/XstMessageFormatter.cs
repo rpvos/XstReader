@@ -43,7 +43,8 @@ namespace XstReader
                : Message?.Body.Format == XstMessageBodyFormat.Rtf ? "rtf"
                : "txt";
 
-        public string ExportFileName => String.Format("{0:yyyy-MM-dd HHmm} {1}", Message?.Date, Message?.Subject).Truncate(150).ReplaceInvalidFileNameChars(" ");
+        //public string ExportFileName => String.Format("{0:yyyy-MM-dd HHmm} {1}", Message?.Date, Message?.Subject).Truncate(150).ReplaceInvalidFileNameChars(" ");
+        public string ExportFileName => String.Format("{0}", Message?.Subject).Truncate(150).ReplaceInvalidFileNameChars(" ");
 
         private XstRecipient OriginatorRecipient => Message.Recipients[RecipientType.Originator].FirstOrDefault();
         private IEnumerable<XstRecipient> ToRecipients => Message.Recipients[RecipientType.To];
@@ -131,17 +132,28 @@ namespace XstReader
         public string EmbedTextHeader(string body)
             => TxtHeader + body ?? "";
 
-        public string SaveMessageMsgToFile(string fileName)
+        public string SaveMessageMsgToFile(string fileName, bool includeVisibleAttachments = true)
         {
-            if (Message == null)
+            if (Message == null
+                || Message.Body == null)
                 return "";
 
+            if (Message.Body.Format != XstMessageBodyFormat.Html)
+            {
+                return "";
+            }
+
             new MessageXst(Message).Save(fileName);
+
             if (!File.Exists(fileName))
                 return "";
 
             if (Message.Date.HasValue)
                 File.SetLastWriteTime(fileName, Message.Date.Value);
+
+            if (includeVisibleAttachments)
+                SaveVisibleAttachmentsToAssociatedFolder(Message, fileName);
+
             return fileName;
         }
 
@@ -165,11 +177,7 @@ namespace XstReader
             }
             else if (Message.Body.Format == XstMessageBodyFormat.Rtf)
             {
-#if !NETCOREAPP
-                SaveMessageRft(fullFileName);
-#else
-                throw new XstException("Emails with body in RTF format not supported on this platform");
-#endif
+                //SaveMessageRft(fullFileName);
             }
             else
             {

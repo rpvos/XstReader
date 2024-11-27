@@ -2,7 +2,8 @@
   "profiles": {
     "XstExporter": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\RIkVos\\Documents\\Outlook Files\\backup.pst\" -t=\"C:\\Users\\RIkVos\\Documents\\Outlook Files\\test\" --email --msg"
+      "commandLineArgs": "\"C:\\Users\\RIkVos\\Documents\\Outlook Files\\backup_new.pst\" -t=\"C:\\Users\\RIkVos\\Documents\\Outlook Files\\test\" --email --msg"
+      //"commandLineArgs": "\"C:\\Users\\RIkVos\\AppData\\Local\\Microsoft\\Outlook\\rik.vos@epona.com.ost\" -t=\"C:\\Users\\RIkVos\\Documents\\Outlook Files\\test\" --email --msg --useDfs"
     }
   }
 }
